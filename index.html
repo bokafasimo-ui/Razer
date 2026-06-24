@@ -1,456 +1,375 @@
-‎<!DOCTYPE html>
-‎<html lang="en">
-‎<head>
-‎<script>(function(s){s.dataset.zone='11192833',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-‎<meta charset="UTF-8">
-‎<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-‎<meta name="theme-color" content="#0a0a0a">
-‎<title>Razer Gold Cards – Up to 30% Off</title>
-‎<style>
-‎*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-‎:root{
-‎  --black:#0a0a0a;
-‎  --deep:#111;
-‎  --surface:#181818;
-‎  --gold:#c8a84b;
-‎  --gold-light:#e8c96a;
-‎  --gold-dim:#a0823a;
-‎  --green:#00d45e;
-‎  --green-dim:#00a849;
-‎  --text:#f0f0f0;
-‎  --muted:#888;
-‎}
-‎html,body{
-‎  background:var(--black);
-‎  color:var(--text);
-‎  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-‎  min-height:100vh;
-‎  overflow-x:hidden;
-‎}
-‎
-‎/* HEADER STRIP */
-‎.header{
-‎  background:var(--deep);
-‎  border-bottom:1px solid #222;
-‎  padding:10px 16px;
-‎  display:flex;
-‎  align-items:center;
-‎  justify-content:space-between;
-‎}
-‎.logo{
-‎  display:flex;
-‎  align-items:center;
-‎  gap:8px;
-‎}
-‎.logo-icon{
-‎  width:28px;height:28px;
-‎  display:flex;align-items:center;justify-content:center;
-‎}
-‎/* Razer-style snake logo SVG inline */
-‎.logo-text{
-‎  font-size:13px;
-‎  font-weight:700;
-‎  letter-spacing:0.12em;
-‎  color:var(--green);
-‎  text-transform:uppercase;
-‎}
-‎.trust-badge{
-‎  font-size:10px;
-‎  color:var(--gold);
-‎  background:rgba(200,168,75,0.1);
-‎  border:1px solid rgba(200,168,75,0.3);
-‎  border-radius:4px;
-‎  padding:3px 7px;
-‎  font-weight:600;
-‎  letter-spacing:0.06em;
-‎}
-‎
-‎/* HERO */
-‎.hero{
-‎  padding:24px 16px 20px;
-‎  text-align:center;
-‎  background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);
-‎  position:relative;
-‎  overflow:hidden;
-‎}
-‎.hero::before{
-‎  content:'';
-‎  position:absolute;
-‎  top:-60px;left:50%;
-‎  transform:translateX(-50%);
-‎  width:260px;height:260px;
-‎  background:radial-gradient(circle,rgba(200,168,75,0.08) 0%,transparent 70%);
-‎  pointer-events:none;
-‎}
-‎
-‎.discount-pill{
-‎  display:inline-flex;
-‎  align-items:center;
-‎  gap:5px;
-‎  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
-‎  color:#000;
-‎  font-size:11px;
-‎  font-weight:800;
-‎  letter-spacing:0.1em;
-‎  text-transform:uppercase;
-‎  border-radius:50px;
-‎  padding:5px 14px;
-‎  margin-bottom:14px;
-‎}
-‎.discount-pill::before{content:'⚡'}
-‎
-‎.hero-heading{
-‎  font-size:26px;
-‎  font-weight:900;
-‎  line-height:1.15;
-‎  letter-spacing:-0.01em;
-‎  color:#fff;
-‎  margin-bottom:10px;
-‎}
-‎.hero-heading span{
-‎  color:var(--gold-light);
-‎}
-‎
-‎.sub{
-‎  font-size:13.5px;
-‎  line-height:1.55;
-‎  color:#bbb;
-‎  margin-bottom:22px;
-‎  padding:0 4px;
-‎}
-‎.sub strong{color:var(--green);}
-‎
-‎/* COUNTDOWN */
-‎.countdown-wrap{
-‎  background:var(--surface);
-‎  border:1px solid #2a2a2a;
-‎  border-radius:12px;
-‎  padding:12px 16px;
-‎  margin-bottom:22px;
-‎  display:flex;
-‎  align-items:center;
-‎  justify-content:center;
-‎  gap:10px;
-‎}
-‎.cd-label{
-‎  font-size:11px;
-‎  color:var(--muted);
-‎  font-weight:600;
-‎  letter-spacing:0.06em;
-‎  text-transform:uppercase;
-‎  flex-shrink:0;
-‎}
-‎.cd-timer{
-‎  display:flex;
-‎  gap:6px;
-‎  align-items:center;
-‎}
-‎.cd-block{
-‎  display:flex;
-‎  flex-direction:column;
-‎  align-items:center;
-‎  background:#000;
-‎  border:1px solid #2a2a2a;
-‎  border-radius:6px;
-‎  padding:5px 8px;
-‎  min-width:38px;
-‎}
-‎.cd-num{
-‎  font-size:18px;
-‎  font-weight:900;
-‎  color:var(--gold-light);
-‎  font-variant-numeric:tabular-nums;
-‎  line-height:1;
-‎}
-‎.cd-unit{
-‎  font-size:8px;
-‎  color:var(--muted);
-‎  letter-spacing:0.06em;
-‎  margin-top:2px;
-‎}
-‎.cd-sep{
-‎  font-size:18px;
-‎  font-weight:900;
-‎  color:var(--gold-dim);
-‎  line-height:1;
-‎  margin-bottom:6px;
-‎}
-‎
-‎/* CTA BUTTON */
-‎.cta-wrap{padding:0 0 6px;}
-‎.cta-btn{
-‎  display:block;
-‎  width:100%;
-‎  padding:17px 20px;
-‎  background:linear-gradient(135deg,#b8922e 0%,var(--gold-light) 50%,#b8922e 100%);
-‎  background-size:200% 100%;
-‎  color:#000;
-‎  font-size:14px;
-‎  font-weight:900;
-‎  letter-spacing:0.08em;
-‎  text-transform:uppercase;
-‎  text-decoration:none;
-‎  border-radius:10px;
-‎  text-align:center;
-‎  animation:shimmer 2.4s ease-in-out infinite;
-‎  box-shadow:0 4px 24px rgba(200,168,75,0.35),0 1px 0 rgba(255,255,255,0.1) inset;
-‎  position:relative;
-‎  overflow:hidden;
-‎}
-‎.cta-btn::after{
-‎  content:'';
-‎  position:absolute;
-‎  top:0;left:-100%;width:60%;height:100%;
-‎  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
-‎  animation:sweep 2.4s ease-in-out infinite;
-‎}
-‎@keyframes shimmer{
-‎  0%,100%{background-position:100% 0}
-‎  50%{background-position:0% 0}
-‎}
-‎@keyframes sweep{
-‎  0%{left:-100%}
-‎  60%,100%{left:160%}
-‎}
-‎.cta-sub{
-‎  font-size:11px;
-‎  color:var(--muted);
-‎  margin-top:10px;
-‎  text-align:center;
-‎  letter-spacing:0.03em;
-‎}
-‎.cta-sub span{color:var(--green);font-weight:700;}
-‎
-‎/* GAME CHIPS */
-‎.games-section{padding:20px 16px 4px;}
-‎.section-label{
-‎  font-size:10px;
-‎  letter-spacing:0.12em;
-‎  text-transform:uppercase;
-‎  color:var(--muted);
-‎  margin-bottom:12px;
-‎  font-weight:700;
-‎}
-‎.game-chips{
-‎  display:flex;
-‎  gap:8px;
-‎  flex-wrap:wrap;
-‎}
-‎.chip{
-‎  background:var(--surface);
-‎  border:1px solid #252525;
-‎  border-radius:6px;
-‎  padding:7px 11px;
-‎  font-size:12px;
-‎  font-weight:600;
-‎  color:#ccc;
-‎  white-space:nowrap;
-‎}
-‎.chip.hot{
-‎  border-color:rgba(200,168,75,0.4);
-‎  color:var(--gold-light);
-‎}
-‎
-‎/* VALUE PROPS */
-‎.props{
-‎  display:grid;
-‎  grid-template-columns:1fr 1fr;
-‎  gap:10px;
-‎  padding:20px 16px;
-‎}
-‎.prop{
-‎  background:var(--surface);
-‎  border:1px solid #222;
-‎  border-radius:10px;
-‎  padding:14px 12px;
-‎}
-‎.prop-icon{font-size:20px;margin-bottom:6px;display:block;}
-‎.prop-title{font-size:12px;font-weight:700;color:#e0e0e0;margin-bottom:2px;}
-‎.prop-desc{font-size:11px;color:var(--muted);line-height:1.4;}
-‎
-‎/* SOCIAL PROOF */
-‎.proof{
-‎  margin:0 16px;
-‎  background:linear-gradient(135deg,rgba(0,212,94,0.06),rgba(200,168,75,0.06));
-‎  border:1px solid #232323;
-‎  border-radius:10px;
-‎  padding:14px 16px;
-‎  display:flex;
-‎  align-items:center;
-‎  gap:12px;
-‎}
-‎.proof-stars{color:var(--gold);font-size:14px;letter-spacing:2px;}
-‎.proof-text{font-size:12px;color:#bbb;line-height:1.45;}
-‎.proof-text strong{color:#e0e0e0;}
-‎
-‎/* SECOND CTA */
-‎.cta2{padding:20px 16px 16px;}
-‎
-‎/* FOOTER */
-‎.footer{
-‎  padding:16px;
-‎  text-align:center;
-‎  border-top:1px solid #1a1a1a;
-‎}
-‎.footer p{font-size:10px;color:#555;line-height:1.6;}
-‎.footer a{color:var(--gold-dim);text-decoration:none;}
-‎
-‎/* Urgency bar */
-‎.urgency-bar{
-‎  background:linear-gradient(90deg,rgba(0,212,94,0.15),rgba(0,168,73,0.08));
-‎  border-bottom:1px solid rgba(0,212,94,0.2);
-‎  border-top:1px solid rgba(0,212,94,0.2);
-‎  padding:8px 16px;
-‎  text-align:center;
-‎  font-size:12px;
-‎  font-weight:600;
-‎  color:var(--green);
-‎  letter-spacing:0.03em;
-‎}
-‎.urgency-bar span{color:#fff;font-weight:400;}
-‎</style>
-‎</head>
-‎<body>
-‎
-‎<!-- HEADER -->
-‎<header class="header">
-‎  <div class="logo">
-‎    <div class="logo-icon">
-‎      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-‎        <polygon points="14,2 20,8 20,14 14,8 8,14 8,8" fill="#00d45e"/>
-‎        <polygon points="14,20 20,14 20,20 14,26 8,20 8,14" fill="#00a849"/>
-‎      </svg>
-‎    </div>
-‎    <span class="logo-text">Razer Gold</span>
-‎  </div>
-‎  <span class="trust-badge">VERIFIED SELLER</span>
-‎</header>
-‎
-‎<!-- URGENCY BAR -->
-‎<div class="urgency-bar">🔥 <span>Only</span> <strong id="stock">23</strong> <span>discount codes left today</span></div>
-‎
-‎<!-- HERO -->
-‎<section class="hero">
-‎  <div class="discount-pill">Up to 30% Off Today</div>
-‎  <h1 class="hero-heading">RAZER GOLD CARDS:<br><span>UP TO 30% OFF!</span></h1>
-‎  <p class="sub">Instant digital delivery. Save big on <strong>PUBG UC, Free Fire Diamonds</strong>, and 2,000+ games. Limited mobile codes left today!</p>
-‎
-‎  <!-- COUNTDOWN -->
-‎  <div class="countdown-wrap">
-‎    <span class="cd-label">Deal ends in</span>
-‎    <div class="cd-timer">
-‎      <div class="cd-block">
-‎        <span class="cd-num" id="cm">05</span>
-‎        <span class="cd-unit">MIN</span>
-‎      </div>
-‎      <span class="cd-sep">:</span>
-‎      <div class="cd-block">
-‎        <span class="cd-num" id="cs">00</span>
-‎        <span class="cd-unit">SEC</span>
-‎      </div>
-‎    </div>
-‎  </div>
-‎
-‎  <!-- PRIMARY CTA -->
-‎  <div class="cta-wrap">
-‎    <a class="cta-btn" href="https://g2a.com" target="_blank" rel="noopener noreferrer">
-‎      ⚡ CLAIM YOUR DISCOUNT NOW
-‎    </a>
-‎    <p class="cta-sub"><span>✓ Secure checkout</span> &nbsp;·&nbsp; <span>✓ Instant delivery</span> &nbsp;·&nbsp; <span>✓ No signup needed</span></p>
-‎  </div>
-‎</section>
-‎
-‎<!-- GAMES -->
-‎<div class="games-section">
-‎  <p class="section-label">Works with 2,000+ games</p>
-‎  <div class="game-chips">
-‎    <span class="chip hot">PUBG UC</span>
-‎    <span class="chip hot">Free Fire 💎</span>
-‎    <span class="chip hot">Mobile Legends</span>
-‎    <span class="chip">Genshin Impact</span>
-‎    <span class="chip">Valorant</span>
-‎    <span class="chip">Call of Duty</span>
-‎    <span class="chip">Roblox</span>
-‎    <span class="chip">+ more</span>
-‎  </div>
-‎</div>
-‎
-‎<!-- VALUE PROPS -->
-‎<div class="props">
-‎  <div class="prop">
-‎    <span class="prop-icon">⚡</span>
-‎    <div class="prop-title">Instant Codes</div>
-‎    <p class="prop-desc">Delivered to your email in seconds, 24/7</p>
-‎  </div>
-‎  <div class="prop">
-‎    <span class="prop-icon">🔒</span>
-‎    <div class="prop-title">Safe & Secure</div>
-‎    <p class="prop-desc">Encrypted checkout, verified seller</p>
-‎  </div>
-‎  <div class="prop">
-‎    <span class="prop-icon">💰</span>
-‎    <div class="prop-title">Best Price</div>
-‎    <p class="prop-desc">Up to 30% below retail today only</p>
-‎  </div>
-‎  <div class="prop">
-‎    <span class="prop-icon">🌍</span>
-‎    <div class="prop-title">Global Support</div>
-‎    <p class="prop-desc">Works in 100+ countries worldwide</p>
-‎  </div>
-‎</div>
-‎
-‎<!-- SOCIAL PROOF -->
-‎<div class="proof">
-‎  <div>
-‎    <div class="proof-stars">★★★★★</div>
-‎  </div>
-‎  <p class="proof-text"><strong>4.8/5 from 12,400+ buyers</strong><br>"Got my Free Fire diamonds instantly. Huge savings!" – Yassin M.</p>
-‎</div>
-‎
-‎<!-- SECOND CTA -->
-‎<div class="cta2">
-‎  <a class="cta-btn" href="https://g2a.com" target="_blank" rel="noopener noreferrer">
-‎    ⚡ CLAIM YOUR DISCOUNT NOW
-‎  </a>
-‎  <p class="cta-sub" style="margin-top:10px"><span>✓ Limited codes available</span> &nbsp;·&nbsp; <span>✓ Price locked for timer</span></p>
-‎</div>
-‎
-‎<!-- FOOTER -->
-‎<footer class="footer">
-‎  <p>This page contains an affiliate link. You'll be redirected to <a href="https://g2a.com" target="_blank" rel="noopener noreferrer">G2A.com</a>, a verified marketplace for digital game cards.<br>Razer® and Razer Gold™ are trademarks of Razer Inc. Discounts vary by listing.</p>
-‎</footer>
-‎
-‎<script>
-‎(function(){
-‎  // Countdown: resets to 5:00 every time, creates FOMO
-‎  var total = 300;
-‎  var cm = document.getElementById('cm');
-‎  var cs = document.getElementById('cs');
-‎  var stock = document.getElementById('stock');
-‎
-‎  function pad(n){return n<10?'0'+n:''+n}
-‎
-‎  function tick(){
-‎    if(total<=0){total=300;}
-‎    var m=Math.floor(total/60);
-‎    var s=total%60;
-‎    cm.textContent=pad(m);
-‎    cs.textContent=pad(s);
-‎    total--;
-‎  }
-‎  tick();
-‎  setInterval(tick,1000);
-‎
-‎  // Randomize stock count slightly for urgency
-‎  var base=23;
-‎  setInterval(function(){
-‎    if(Math.random()<0.15&&base>7){
-‎      base--;
-‎      stock.textContent=base;
-‎    }
-‎  },18000);
-‎})();
-‎</script>
-‎</body>
-‎</html>
-‎
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#000000">
+<title>Razer Gold Gift Cards — 30% Off Today</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --green:#00e55c;
+    --green-dim:#00b848;
+    --green-glow:rgba(0,229,92,0.18);
+    --bg:#0a0a0a;
+    --bg2:#111111;
+    --bg3:#161616;
+    --border:#1e1e1e;
+    --text:#f0f0f0;
+    --muted:#888;
+    --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+  }
+  html{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  body{min-height:100dvh;max-width:430px;margin:0 auto;overflow-x:hidden}
+
+  /* HEADER */
+  .header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.92);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)
+  }
+  .logo{display:flex;align-items:center;gap:8px}
+  .logo-icon{width:28px;height:28px}
+  .logo-text{font-size:15px;font-weight:700;letter-spacing:.5px;color:#fff}
+  .logo-text span{color:var(--green)}
+  .badge-live{
+    font-size:10px;font-weight:700;letter-spacing:1.2px;
+    color:var(--green);border:1px solid var(--green);
+    padding:3px 8px;border-radius:20px;text-transform:uppercase
+  }
+
+  /* HERO */
+  .hero{
+    padding:36px 20px 28px;text-align:center;
+    background:linear-gradient(180deg,#0d1a0f 0%,var(--bg) 100%)
+  }
+  .deal-tag{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--green-glow);border:1px solid rgba(0,229,92,0.35);
+    color:var(--green);font-size:11px;font-weight:700;letter-spacing:1.4px;
+    padding:5px 14px;border-radius:20px;text-transform:uppercase;margin-bottom:20px
+  }
+  .deal-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+  .hero h1{font-size:32px;font-weight:800;line-height:1.15;letter-spacing:-.5px;margin-bottom:10px}
+  .hero h1 span{color:var(--green)}
+  .hero-sub{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+
+  .discount-block{
+    background:var(--bg2);border:1px solid var(--border);
+    border-radius:16px;padding:20px;margin-bottom:28px;text-align:center
+  }
+  .discount-number{
+    font-size:72px;font-weight:900;line-height:1;color:var(--green);
+    letter-spacing:-3px;font-variant-numeric:tabular-nums
+  }
+  .discount-label{font-size:13px;color:var(--muted);margin-top:4px;letter-spacing:.5px;text-transform:uppercase}
+  .price-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
+  .price-old{font-size:18px;color:var(--muted);text-decoration:line-through}
+  .price-new{font-size:28px;font-weight:800;color:var(--green)}
+
+  /* CTA */
+  .cta-btn{
+    display:block;width:100%;padding:17px 20px;
+    background:var(--green);color:#000;
+    font-size:16px;font-weight:800;letter-spacing:.4px;text-align:center;
+    text-decoration:none;border-radius:12px;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .15s,transform .1s;
+    border:none;cursor:pointer
+  }
+  .cta-btn:active{background:var(--green-dim);transform:scale(.98)}
+  .cta-sub{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
+
+  /* TRUST BAR */
+  .trust-bar{
+    display:flex;justify-content:space-between;
+    padding:16px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    background:var(--bg2)
+  }
+  .trust-item{text-align:center;flex:1}
+  .trust-num{font-size:18px;font-weight:800;color:var(--green)}
+  .trust-lbl{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.3px}
+
+  /* SECTION */
+  .section{padding:28px 20px}
+  .section-label{
+    font-size:10px;font-weight:700;letter-spacing:2px;color:var(--green);
+    text-transform:uppercase;margin-bottom:16px
+  }
+  .section h2{font-size:22px;font-weight:800;line-height:1.25;margin-bottom:6px}
+  .section p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+
+  /* GAMES GRID */
+  .games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+  .game-card{
+    background:var(--bg3);border:1px solid var(--border);border-radius:12px;
+    padding:14px 10px;text-align:center
+  }
+  .game-icon{font-size:24px;margin-bottom:6px}
+  .game-name{font-size:11px;font-weight:600;color:var(--text);line-height:1.3}
+  .game-genre{font-size:10px;color:var(--muted);margin-top:2px}
+
+  /* FEATURE LIST */
+  .feature-list{list-style:none}
+  .feature-list li{
+    display:flex;align-items:flex-start;gap:12px;
+    padding:14px 0;border-bottom:1px solid var(--border)
+  }
+  .feature-list li:last-child{border-bottom:none}
+  .feat-icon{
+    width:36px;height:36px;border-radius:10px;
+    background:var(--green-glow);border:1px solid rgba(0,229,92,.2);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;font-size:16px
+  }
+  .feat-text strong{display:block;font-size:14px;font-weight:700;margin-bottom:2px}
+  .feat-text span{font-size:13px;color:var(--muted);line-height:1.5}
+
+  /* HOW IT WORKS */
+  .steps{display:flex;flex-direction:column;gap:0}
+  .step{display:flex;gap:16px;align-items:flex-start;padding:16px 0;position:relative}
+  .step:not(:last-child)::after{
+    content:'';position:absolute;left:17px;top:48px;bottom:0;
+    width:1px;background:var(--border)
+  }
+  .step-num{
+    width:36px;height:36px;border-radius:50%;
+    background:var(--bg3);border:1px solid var(--green);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:800;color:var(--green);flex-shrink:0
+  }
+  .step-body strong{display:block;font-size:14px;font-weight:700;margin-bottom:3px}
+  .step-body span{font-size:13px;color:var(--muted);line-height:1.5}
+
+  /* SILVER REWARDS */
+  .rewards-card{
+    background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+    padding:20px;display:flex;gap:16px;align-items:center
+  }
+  .rewards-icon{font-size:40px;flex-shrink:0}
+  .rewards-card h3{font-size:16px;font-weight:800;margin-bottom:4px}
+  .rewards-card p{font-size:13px;color:var(--muted);line-height:1.55}
+  .rewards-card strong{color:var(--green)}
+
+  /* BOTTOM CTA */
+  .bottom-cta{
+    padding:28px 20px 36px;
+    background:linear-gradient(180deg,var(--bg) 0%,#0d1a0f 100%)
+  }
+  .bottom-cta h2{font-size:24px;font-weight:800;text-align:center;margin-bottom:6px}
+  .bottom-cta p{font-size:14px;color:var(--muted);text-align:center;margin-bottom:20px}
+
+  /* FOOTER */
+  footer{
+    padding:16px 20px 28px;border-top:1px solid var(--border);
+    text-align:center;font-size:11px;color:var(--muted);line-height:1.8
+  }
+
+  /* STICKY CTA BAR */
+  .sticky-bar{
+    position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+    width:100%;max-width:430px;padding:12px 20px 20px;
+    background:linear-gradient(0deg,rgba(10,10,10,1) 60%,rgba(10,10,10,0));
+    pointer-events:none;z-index:200
+  }
+  .sticky-bar .cta-btn{pointer-events:all;box-shadow:0 0 24px rgba(0,229,92,.25)}
+
+  /* Hide sticky bar until scrolled */
+  .sticky-bar{opacity:0;transition:opacity .3s}
+  .sticky-bar.visible{opacity:1}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="28" height="28" rx="6" fill="#00e55c" fill-opacity=".12"/>
+      <path d="M7 8h8.5c2.5 0 4 1.2 4 3.2 0 1.4-.8 2.5-2 3l2.8 5.8H17l-2.5-5.2H10V20H7V8zm3 4.8h5c.9 0 1.5-.5 1.5-1.3S15.9 10 15 10H10v2.8z" fill="#00e55c"/>
+    </svg>
+    <span class="logo-text">Razer <span>Gold</span></span>
+  </div>
+  <div class="badge-live">Live Deal</div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="deal-tag">Limited offer — 30% off today</div>
+    <h1>Your gaming wallet,<br><span>supercharged.</span></h1>
+    <p class="hero-sub">Top up with Razer Gold and unlock instant access to 42,000+ games — plus earn Razer Silver on every purchase.</p>
+
+    <div class="discount-block">
+      <div class="discount-number">30%</div>
+      <div class="discount-label">Off all Razer Gold gift cards</div>
+      <div class="price-row">
+        <span class="price-old">$20.00</span>
+        <span class="price-new">$14.00</span>
+      </div>
+    </div>
+
+    <a href="https://g2a.com" class="cta-btn" rel="noopener">Claim Discount Now →</a>
+    <p class="cta-sub">Instant delivery · No account required to browse</p>
+  </section>
+
+  <div class="trust-bar">
+    <div class="trust-item">
+      <div class="trust-num">42K+</div>
+      <div class="trust-lbl">Games</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-num">190+</div>
+      <div class="trust-lbl">Countries</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-num">50M+</div>
+      <div class="trust-lbl">Gamers</div>
+    </div>
+  </div>
+
+  <section class="section">
+    <p class="section-label">Popular titles</p>
+    <h2>The games everyone is playing</h2>
+    <p>Razer Gold is accepted everywhere — from mobile battlegrounds to PC epics.</p>
+    <div class="games-grid">
+      <div class="game-card">
+        <div class="game-icon">🔫</div>
+        <div class="game-name">PUBG Mobile</div>
+        <div class="game-genre">Battle Royale</div>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🌊</div>
+        <div class="game-name">Genshin Impact</div>
+        <div class="game-genre">RPG</div>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">⚔️</div>
+        <div class="game-name">Free Fire</div>
+        <div class="game-genre">Battle Royale</div>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🎮</div>
+        <div class="game-name">Mobile Legends</div>
+        <div class="game-genre">MOBA</div>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🏆</div>
+        <div class="game-name">League of Legends</div>
+        <div class="game-genre">MOBA</div>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🌌</div>
+        <div class="game-name">Honkai: Star Rail</div>
+        <div class="game-genre">RPG</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <p class="section-label">Why Razer Gold</p>
+    <h2>Built for serious gamers</h2>
+    <ul class="feature-list">
+      <li>
+        <div class="feat-icon">🌍</div>
+        <div class="feat-text">
+          <strong>Global access, no borders</strong>
+          <span>Works in 190+ countries. Top up in your local currency and play any supported title worldwide.</span>
+        </div>
+      </li>
+      <li>
+        <div class="feat-icon">⚡</div>
+        <div class="feat-text">
+          <strong>Instant delivery</strong>
+          <span>Receive your PIN code immediately after purchase. No shipping, no waiting — get back in the game.</span>
+        </div>
+      </li>
+      <li>
+        <div class="feat-icon">🔒</div>
+        <div class="feat-text">
+          <strong>Secure & anonymous</strong>
+          <span>Gift cards keep your payment details off gaming platforms. Fund your wallet without linking a card.</span>
+        </div>
+      </li>
+      <li>
+        <div class="feat-icon">💸</div>
+        <div class="feat-text">
+          <strong>Multiple denominations</strong>
+          <span>From $5 to $100 — buy exactly what you need and never over-commit to a single platform.</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <p class="section-label">Razer Silver rewards</p>
+    <div class="rewards-card">
+      <div class="rewards-icon">🪙</div>
+      <div>
+        <h3>Earn while you spend</h3>
+        <p>Every Razer Gold purchase earns you <strong>Razer Silver</strong> — the loyalty currency you redeem for peripherals, in-game items, and exclusive gear.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <p class="section-label">How it works</p>
+    <h2>Three steps to play</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Choose your card value</strong>
+          <span>Pick from $5, $10, $20, $50, or $100 denominations on the offer page.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Checkout with the 30% deal</strong>
+          <span>Apply the discount at checkout — no promo code needed, price drops automatically.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Redeem & play instantly</strong>
+          <span>Enter your PIN in the Razer Gold app or website, credit your wallet, and top up any game.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-cta">
+    <h2>Ready to save 30%?</h2>
+    <p>Grab your discounted Razer Gold card before this deal expires.</p>
+    <a href="https://g2a.com" class="cta-btn" rel="noopener">Get My Razer Gold Card →</a>
+    <p class="cta-sub" style="margin-top:10px">Secure checkout · Instant PIN delivery</p>
+  </section>
+
+</main>
+
+<footer>
+  <p>This page contains affiliate links. We may earn a commission at no extra cost to you.</p>
+  <p style="margin-top:4px">Razer Gold™ is a trademark of Razer Inc.</p>
+</footer>
+
+<div class="sticky-bar" id="stickyBar">
+  <a href="https://g2a.com" class="cta-btn" rel="noopener">30% Off — Claim Now →</a>
+</div>
+
+<script>
+(function(){
+  var bar=document.getElementById('stickyBar');
+  var hero=document.querySelector('.hero');
+  var io=new IntersectionObserver(function(e){
+    bar.classList.toggle('visible',!e[0].isIntersecting);
+  },{threshold:0.1});
+  io.observe(hero);
+})();
+</script>
+</body>
+</html>

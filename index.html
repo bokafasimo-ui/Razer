@@ -370,5 +370,111 @@
   io.observe(hero);
 })();
 </script>
+ <!--
+  EXIT-INTENT POPUP — Optimized for Popunder/Mobile Traffic
+  ─────────────────────────────────────────────────────────
+  • Intercepts the Back Button via History API
+  • Shows native ad container inside popup
+  • Close button safely separated from ad slot
+  • Compatible: Chrome/Safari/Firefox mobile (Android & iOS)
+-->
+
+<style>
+  /* ── Overlay ── */
+  #ep {
+    display: none;
+    position: fixed;
+    inset: 0;                          /* shorthand for top/right/bottom/left:0 */
+    background: rgba(0,0,0,.86);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    direction: ltr;
+  }
+  #ep.show { display: flex; }          /* toggled by JS — avoids inline-style flash */
+
+  /* ── Card ── */
+  #ep-box {
+    background: #fff;
+    padding: 20px;
+    width: 85%;
+    max-width: 340px;
+    border-radius: 10px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* ── Headline ── */
+  #ep-box h4 {
+    margin: 0 0 14px;
+    color: #222;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  /* ── Ad slot wrapper ── */
+  #ep-ad {
+    min-height: 50px;                  /* reserve space so layout doesn't jump */
+    overflow: hidden;
+  }
+
+  /* ── Close button — intentionally separated from ad slot ── */
+  #ep-close {
+    display: block;
+    margin-top: 24px;                  /* ← safe gap between ad and button */
+    padding: 11px 16px;
+    width: 100%;
+    background: #efefef;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    cursor: pointer;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #ep-close:active { background: #e0e0e0; }
+</style>
+
+<!-- ── Popup Markup ── -->
+<div id="ep" role="dialog" aria-modal="true" aria-label="Special offers">
+  <div id="ep-box">
+    <h4>Special offers you might like before you leave:</h4>
+
+    <div id="ep-ad">
+      <!-- [ امسح هذا السطر وضَع شفرة إعلان Evadav هنا ] -->
+    </div>
+
+    <button id="ep-close">Close &amp; Exit</button>
+  </div>
+</div>
+
+<!-- ── Script ── -->
+<script>
+(function () {
+  'use strict';
+
+  if (!window.history || !window.history.pushState) return;
+
+  history.pushState({ ep: 1 }, '');
+
+  window.addEventListener('popstate', function (e) {
+    document.getElementById('ep').classList.add('show');
+  }, { once: true });
+
+  document.getElementById('ep-close').addEventListener('click', function () {
+    try {
+      document.getElementById('ep').classList.remove('show');
+      history.go(history.length > 2 ? -2 : -(history.length - 1));
+    } catch (err) {
+      window.close();
+    }
+  });
+
+}());
+</script>
+
 </body>
 </html>

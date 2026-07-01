@@ -19,9 +19,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm install node-fetch@3
-
       - name: Fetch & cache matches
         env:
           FOOTBALL_API_KEY: ${{ secrets.Footballabde }}

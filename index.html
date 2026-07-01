@@ -1,801 +1,744 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚽ Match Tracker Pro</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
-
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>⚽ Predice y Gana USDT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --neon-cyan: #00d4ff;
-      --neon-green: #00ff88;
-      --neon-vs: #ffe033;
-      --glass-bg: rgba(255,255,255,0.04);
-      --glass-border: rgba(255,255,255,0.10);
-      --text-primary: #e8f4fd;
-      --text-muted: rgba(255,255,255,0.45);
-      --card-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    /* ── Reset & Tokens ────────────────────────────── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cyan:#00d4ff;--green:#00ff88;--gold:#ffe033;
+      --gbg:rgba(255,255,255,0.04);--gborder:rgba(255,255,255,0.09);
+      --fg:#e8f4fd;--muted:rgba(255,255,255,0.42);
+    }
+    html{-webkit-text-size-adjust:100%}
+    body{
+      font-family:'Inter',sans-serif;color:var(--fg);overflow-x:hidden;
+      background:radial-gradient(circle at 50% 35%,#0f1d30 0%,#060b11 100%);
+      min-height:100vh;
+    }
+    /* subtle corner glows — GPU-friendly, low opacity */
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse 60% 40% at 0% 0%,rgba(26,107,255,0.12) 0%,transparent 70%),
+                 radial-gradient(ellipse 50% 35% at 100% 100%,rgba(0,212,255,0.10) 0%,transparent 70%);
     }
 
-    html, body {
-      min-height: 100vh;
-      font-family: 'Inter', sans-serif;
-      color: var(--text-primary);
-      overflow-x: hidden;
-    }
-    body {
-      background: radial-gradient(circle at 50% 40%, #101f32 0%, #060b11 100%);
-      position: relative;
+    /* ── Layout ────────────────────────────────────── */
+    .wrap{
+      position:relative;z-index:1;
+      max-width:430px;margin:0 auto;
+      padding:14px 12px 44px;
+      display:flex;flex-direction:column;gap:10px;
     }
 
-    /* Stadium corner lights */
-    body::before, body::after {
-      content: '';
-      position: fixed;
-      width: 520px; height: 520px;
-      border-radius: 50%;
-      filter: blur(120px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.18;
-    }
-    body::before { background: radial-gradient(circle, #1a6bff 0%, transparent 70%); top: -160px; left: -160px; }
-    body::after  { background: radial-gradient(circle, #00d4ff 0%, transparent 70%); bottom: -160px; right: -160px; }
-
-    .stadium-light { position: fixed; width: 400px; height: 400px; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; opacity: 0.12; }
-    .stadium-light.tr { background: radial-gradient(circle, #00ff88 0%, transparent 70%); top: -120px; right: -100px; }
-    .stadium-light.bl { background: radial-gradient(circle, #6622cc 0%, transparent 70%); bottom: -100px; left: -80px; }
-
-    /* Layout */
-    .container {
-      position: relative; z-index: 1;
-      max-width: 780px; margin: 0 auto;
-      padding: 10px 12px 40px;
-      display: flex; flex-direction: column; gap: 10px;
+    /* ── Glass card ─────────────────────────────────── */
+    .card{
+      background:var(--gbg);
+      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      border:1px solid var(--gborder);border-radius:18px;
+      box-shadow:0 6px 24px rgba(0,0,0,0.4);
     }
 
-    /* ══════════════════════════════════════
-       TOP BAR — logo + title + countdown merged
-    ══════════════════════════════════════ */
-    .top-bar {
-      display: grid;
-      grid-template-columns: 40px 1fr auto;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 13px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.08);
+    /* ════════════════════════════════════════════════
+       HEADER
+    ════════════════════════════════════════════════ */
+    .hdr{text-align:center;padding:2px 0 0}
+
+    .hdr-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      font-family:'Orbitron',monospace;font-size:9px;letter-spacing:3px;
+      color:var(--cyan);border:1px solid rgba(0,212,255,0.28);
+      padding:4px 14px;border-radius:20px;margin-bottom:10px;
+      text-shadow:0 0 7px var(--cyan);
+    }
+    .hdr-title-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:5px}
+    .hdr-usdt{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(38,161,123,0.4)}
+    .hdr-title{
+      font-family:'Orbitron',monospace;font-size:clamp(18px,5vw,26px);
+      font-weight:900;letter-spacing:1px;
+      background:linear-gradient(135deg,#e8f4fd 30%,var(--cyan) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    /* ── Header sub — dynamic match info strip ── */
+    .hdr-sub{
+      display:inline-flex;align-items:center;justify-content:center;
+      flex-wrap:wrap;gap:0;
+      margin-top:2px;
+    }
+    .hdr-sub-pill{
+      display:inline-flex;align-items:center;
+      flex-wrap:wrap;justify-content:center;
+      gap:2px;
+      padding:6px 14px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(0,212,255,0.12);
+      border-radius:30px;
+      white-space:nowrap;
+    }
+    .hdr-sub-dot{
+      width:4px;height:4px;border-radius:50%;
+      background:rgba(0,212,255,0.4);
+      display:inline-block;margin:0 6px;flex-shrink:0;
+      box-shadow:0 0 4px rgba(0,212,255,0.3);
+    }
+    .hdr-sub-tournament{
+      font-family:'Orbitron',monospace;
+      font-size:9px;font-weight:700;letter-spacing:2px;
+      color:var(--cyan);text-transform:uppercase;
+      text-shadow:0 0 8px rgba(0,212,255,0.5);
+    }
+    .hdr-sub-stadium{color:rgba(232,244,253,0.55)}
+    .hdr-sub-time{
+      font-family:'Orbitron',monospace;
+      font-size:10px;font-weight:700;
+      color:var(--gold);
+      text-shadow:0 0 7px rgba(255,224,51,0.45);
+      letter-spacing:1px;
     }
 
-    /* USDT coin */
-    .hero-header { display: contents; }
-    .hero-usdt-ring {
-      width: 40px; height: 40px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
+    /* ── Forecast notice — premium styled ── */
+    .forecast{
+      display:flex;align-items:center;justify-content:center;gap:0;
+      margin-top:12px;
     }
-    .hero-usdt-ring-glow { display: none; }
-    .hero-usdt-ring::after { display: none; }
-    .hero-usdt-logo {
-      width: 40px; height: 40px;
-      border-radius: 50%; object-fit: cover; display: block;
-      border: 1.5px solid rgba(38,161,123,0.4);
+    .forecast-inner{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 16px;
+      border-radius:12px;
+      background:linear-gradient(135deg,rgba(255,202,40,0.07) 0%,rgba(255,160,0,0.04) 100%);
+      border:1px solid rgba(255,202,40,0.18);
+      box-shadow:0 0 16px rgba(255,202,40,0.08),inset 0 1px 0 rgba(255,202,40,0.06);
     }
+    .forecast-icon{
+      width:26px;height:26px;border-radius:50%;flex-shrink:0;
+      background:rgba(255,202,40,0.10);
+      border:1px solid rgba(255,202,40,0.22);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .forecast-text{display:flex;flex-direction:column;gap:1px;text-align:left}
+    .forecast-label{
+      font-family:'Orbitron',monospace;
+      font-size:7px;letter-spacing:2.5px;text-transform:uppercase;
+      color:rgba(255,202,40,0.55);line-height:1;
+    }
+    .forecast-msg{
+      font-family:'Inter',sans-serif;
+      font-size:11px;font-weight:600;
+      color:rgba(255,202,40,0.88);
+      line-height:1.3;letter-spacing:0.1px;
+    }
+    .timer-card{padding:18px 14px 16px;text-align:center}
+    .timer-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
 
-    /* Text block */
-    .hero-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-    .hero-eyebrow {
-      font-family: 'Orbitron', monospace; font-size: 7px; letter-spacing: 2px;
-      color: rgba(38,161,123,0.75); text-transform: uppercase;
-      display: flex; align-items: center; gap: 5px;
+    .timer-digits{
+      display:flex;justify-content:center;align-items:flex-start;
+      font-family:'Orbitron',monospace;
+      font-size:clamp(30px,9vw,52px);font-weight:700;
+      color:var(--cyan);
+      text-shadow:0 0 10px var(--cyan),0 0 28px rgba(0,212,255,0.35);
+      letter-spacing:-1px;line-height:1;
     }
-    .hero-dot { width: 4px; height: 4px; border-radius: 50%; background: #26a17b; flex-shrink: 0; }
-    .hero-title {
-      font-family: 'Orbitron', monospace; font-weight: 900;
-      font-size: clamp(12px, 3.5vw, 16px); line-height: 1.15; letter-spacing: 0.3px;
-      display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;
-    }
-    .hero-title-line1 {
-      background: linear-gradient(180deg,#fff 0%,rgba(232,244,253,0.75) 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    }
-    .hero-title-line2 {
-      background: linear-gradient(135deg,#e8f4fd 20%,#00d4ff 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    }
-    .hero-title-line2 em {
-      font-style: normal;
-      background: linear-gradient(135deg,#26d395 0%,#00ffb8 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    }
-    .hero-subtitle {
-      font-size: 9.5px; line-height: 1.4; color: rgba(232,244,253,0.38);
-    }
-    .hero-subtitle strong { color: rgba(255,255,255,0.62); }
-    .hero-pills, .hero-pill, .hero-pill--gold, .hero-pill--cyan { display: none; }
+    .tseg{display:flex;flex-direction:column;align-items:center;gap:5px}
+    .tunit{font-family:'Inter',sans-serif;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;text-shadow:none}
+    .tcolon{padding:0 2px;opacity:.45;animation:blink 1s step-end infinite}
+    @keyframes blink{0%,100%{opacity:.45}50%{opacity:.1}}
 
-    /* Countdown inline */
-    .timer-inline { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
-    .timer-inline-label {
-      font-size: 6.5px; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--text-muted); font-family: 'Inter', sans-serif; text-align: right;
+    .forecast{
+      display:flex;align-items:flex-start;justify-content:center;gap:6px;
+      margin-top:10px;font-size:11px;color:#ffca28;line-height:1.4;
     }
-    .timer-inline-digits {
-      display: flex; align-items: center;
-      font-family: 'Orbitron', monospace;
-      font-size: clamp(15px, 4.2vw, 22px); font-weight: 700;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 8px var(--neon-cyan), 0 0 20px rgba(0,212,255,0.3);
-      letter-spacing: -1px; line-height: 1;
-    }
-    .tc { opacity: 0.45; animation: blink 1s step-end infinite; padding: 0 1px; }
-    @keyframes blink { 0%,100%{opacity:0.45} 50%{opacity:0.1} }
+    .forecast svg{flex-shrink:0;margin-top:1px}
 
-    /* Live + forecast micro-bar */
-    .live-status-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 4px 4px;
+    /* EN VIVO pill */
+    .live-wrap{display:flex;justify-content:center;margin-top:10px}
+    .live-pill{
+      display:inline-flex;align-items:center;gap:9px;
+      padding:7px 18px 7px 12px;border-radius:40px;
+      background:rgba(0,255,180,0.05);border:1px solid rgba(0,255,180,0.22);
+      animation:breathe 3s ease-in-out infinite;
     }
-    .live-status-pill {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 3px 9px; border-radius: 20px;
-      border: 1px solid rgba(0,255,180,0.18);
-      background: rgba(0,255,180,0.04);
+    @keyframes breathe{
+      0%,100%{border-color:rgba(0,255,180,0.22);box-shadow:0 0 14px rgba(0,255,180,0.10)}
+      50%{border-color:rgba(0,255,180,0.50);box-shadow:0 0 22px rgba(0,255,180,0.28)}
     }
-    .live-dot-core {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: #00ffb8; box-shadow: 0 0 5px #00ffb8;
-      animation: ldot 1.6s ease-in-out infinite; flex-shrink: 0;
+    .live-dot{position:relative;width:12px;height:12px;flex-shrink:0}
+    .live-dot-core{position:absolute;inset:3px;border-radius:50%;background:#00ffb8;box-shadow:0 0 6px #00ffb8;animation:dcore 1.6s ease-in-out infinite;z-index:2}
+    @keyframes dcore{0%,100%{transform:scale(1)}50%{transform:scale(.65);opacity:.6}}
+    .live-dot-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(0,255,184,.55);animation:dring 1.6s ease-out infinite}
+    .live-dot-ring2{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(0,255,184,.3);animation:dring 1.6s ease-out infinite .5s}
+    @keyframes dring{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.5);opacity:0}}
+    .live-sep{width:1px;height:20px;background:linear-gradient(to bottom,transparent,rgba(0,255,184,.28),transparent)}
+    .live-text{display:flex;flex-direction:column;gap:2px}
+    .live-top{font-family:'Orbitron',monospace;font-size:10px;font-weight:900;letter-spacing:3px;color:#00ffb8;text-shadow:0 0 7px #00ffb8}
+    .live-sub{font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,255,184,.5)}
+
+    /* ════════════════════════════════════════════════
+       MATCH CARD — Premium Logo Design
+    ════════════════════════════════════════════════ */
+    .match-card{padding:22px 14px 20px}
+    .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
+    .team{display:flex;flex-direction:column;align-items:center;gap:10px}
+
+    /* Outer glow halo */
+    .logo-halo{
+      position:relative;
+      width:82px;height:82px;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;
     }
-    @keyframes ldot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.65)} }
-    .live-status-text {
-      font-family: 'Orbitron', monospace; font-size: 7.5px;
-      font-weight: 700; letter-spacing: 2px; color: #00ffb8;
-      text-shadow: 0 0 5px rgba(0,255,184,0.45);
+    /* Animated conic border layer */
+    .logo-halo::before{
+      content:'';
+      position:absolute;inset:0;border-radius:50%;
+      background:conic-gradient(
+        rgba(0,212,255,0) 0deg,
+        rgba(0,212,255,0.9) 90deg,
+        rgba(0,255,136,0.6) 180deg,
+        rgba(0,212,255,0) 270deg
+      );
+      animation:spin-halo 3s linear infinite;
+      padding:2px;
+      -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;
+      mask-composite:exclude;
     }
-    .forecast-pill {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 9px; color: rgba(255,202,40,0.7);
-      font-family: 'Inter', sans-serif;
-    }
+    @keyframes spin-halo{to{transform:rotate(360deg)}}
 
-    /* Hide old separate sections — replaced by top-bar */
-    .hero-header-old, .timer-section, .live-badge-wrap, .forecast-notice { display: none !important; }
-
-    /* Glass */
-    /* Glass */
-    .glass {
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px; box-shadow: var(--card-shadow);
-    }
-
-    /* ── Countdown Timer ── */
-    .timer-section { padding: 10px 14px 10px; text-align: center; }
-    .timer-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-
-    .timer-digits {
-      display: flex; justify-content: center; align-items: flex-start; gap: 0;
-      font-family: 'Orbitron', monospace;
-      font-size: clamp(20px, 5.5vw, 36px); font-weight: 700;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0,212,255,0.4), 0 0 60px rgba(0,212,255,0.15);
-      letter-spacing: -2px; line-height: 1;
-    }
-    .timer-segment { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .timer-unit { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; text-shadow: none; font-weight: 400; }
-    .timer-colon { padding: 0 2px; opacity: 0.5; animation: blink 1s step-end infinite; padding-top: 2px; }
-    @keyframes blink { 0%,100%{opacity:0.5} 50%{opacity:0.1} }
-
-    /* Forecast notice */
-    .forecast-notice {
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      margin-top: 14px;
-      font-family: 'Inter', sans-serif;
-      font-size: 12px; color: #ffca28; letter-spacing: 0.5px;
-    }
-    .forecast-notice svg { flex-shrink: 0; filter: drop-shadow(0 0 5px rgba(255,202,40,0.6)); }
-
-    /* EN VIVO badge */
-    .live-badge-wrap { display: flex; justify-content: center; margin-top: 10px; }
-    .live-badge {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 9px 22px 9px 14px; border-radius: 50px;
-      background: linear-gradient(135deg, rgba(0,255,200,0.07) 0%, rgba(0,180,255,0.05) 100%);
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(0,255,180,0.25);
-      box-shadow: 0 0 0 1px rgba(0,255,180,0.08), 0 0 18px rgba(0,255,180,0.12), 0 0 40px rgba(0,212,255,0.06), inset 0 1px 1px rgba(255,255,255,0.06);
-      animation: badge-breathe 3s ease-in-out infinite;
-      cursor: default; user-select: none;
-    }
-    @keyframes badge-breathe {
-      0%,100% { box-shadow: 0 0 0 1px rgba(0,255,180,0.08), 0 0 18px rgba(0,255,180,0.15), 0 0 40px rgba(0,212,255,0.08), inset 0 1px 1px rgba(255,255,255,0.06); border-color: rgba(0,255,180,0.25); }
-      50%      { box-shadow: 0 0 0 1px rgba(0,255,180,0.18), 0 0 28px rgba(0,255,180,0.35), 0 0 60px rgba(0,212,255,0.18), inset 0 1px 1px rgba(255,255,255,0.10); border-color: rgba(0,255,180,0.55); }
-    }
-    .live-radar { position: relative; width: 14px; height: 14px; flex-shrink: 0; }
-    .live-radar-core { position: absolute; inset: 3px; border-radius: 50%; background: #00ffb8; box-shadow: 0 0 6px #00ffb8, 0 0 14px rgba(0,255,184,0.8); animation: radar-core 1.6s ease-in-out infinite; z-index: 2; }
-    @keyframes radar-core { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(0.7);opacity:0.7} }
-    .live-radar-ring  { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(0,255,184,0.6); animation: radar-expand 1.6s ease-out infinite; z-index: 1; }
-    .live-radar-ring2 { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(0,255,184,0.35); animation: radar-expand 1.6s ease-out infinite 0.5s; z-index: 1; }
-    @keyframes radar-expand { 0%{transform:scale(1);opacity:0.8} 100%{transform:scale(2.6);opacity:0} }
-    .live-badge-divider { width: 1px; height: 24px; background: linear-gradient(to bottom, transparent, rgba(0,255,184,0.3), transparent); flex-shrink: 0; }
-    .live-badge-text { display: flex; flex-direction: column; gap: 2px; }
-    .live-badge-top { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 900; letter-spacing: 3px; color: #00ffb8; text-shadow: 0 0 8px #00ffb8, 0 0 20px rgba(0,255,184,0.5); line-height: 1; }
-    .live-badge-sub { font-family: 'Inter', sans-serif; font-size: 8.5px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(0,255,184,0.55); line-height: 1; }
-
-    /* ── Match Card ── */
-    .match-card { padding: 18px 14px 16px; }
-    .teams-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
-    .team { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-
-    /* Logo ring */
-    .logo-ring {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: var(--glass-bg);
-      border: 2px solid rgba(255,255,255,0.15);
-      box-shadow: 0 0 0 1px rgba(0,212,255,0.2), 0 0 16px rgba(0,212,255,0.12), inset 0 1px 1px rgba(255,255,255,0.08);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; position: relative; transition: box-shadow 0.3s ease;
-    }
-    .logo-ring:hover { box-shadow: 0 0 0 2px rgba(0,212,255,0.5), 0 0 28px rgba(0,212,255,0.3), inset 0 1px 1px rgba(255,255,255,0.12); }
-    .logo-ring img { width:100%; height:100%; object-fit:contain; padding:10px; }
-    .logo-ring .logo-placeholder { font-size: 28px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
-    .logo-ring::after { content:''; position:absolute; inset:-2px; border-radius:50%; background:conic-gradient(transparent 0deg, rgba(0,212,255,0.6) 60deg, transparent 120deg); animation:spin-ring 4s linear infinite; pointer-events:none; }
-    .logo-ring::before { content:''; position:absolute; inset:2px; border-radius:50%; background:#0c1929; z-index:1; }
-    .logo-ring > * { position:relative; z-index:2; }
-    @keyframes spin-ring { to{transform:rotate(360deg)} }
-
-    .team-name { font-family:'Orbitron',monospace; font-size:13px; font-weight:700; letter-spacing:1px; text-align:center; }
-
-    /* Score */
-    .score-block { display:flex; flex-direction:column; align-items:center; gap:8px; }
-    .score-num { font-family:'Orbitron',monospace; font-size:36px; font-weight:900; line-height:1; color:var(--text-primary); text-shadow:0 0 20px rgba(255,255,255,0.2); min-width:44px; text-align:center; }
-    .btn-goal { width:30px; height:30px; border-radius:50%; border:1.5px solid rgba(0,255,136,0.35); background:rgba(0,255,136,0.06); color:var(--neon-green); font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; line-height:1; text-shadow:0 0 8px var(--neon-green); }
-    .btn-goal:hover { background:rgba(0,255,136,0.15); box-shadow:0 0 14px rgba(0,255,136,0.4); }
-    .btn-goal:active { background:rgba(0,255,136,0.30); box-shadow:0 0 24px rgba(0,255,136,0.7),0 0 6px rgba(0,255,136,0.9); transform:scale(0.93); }
-    .btn-goal.minus { border-color:rgba(255,80,80,0.35); color:#ff6b6b; text-shadow:0 0 8px #ff6b6b; background:rgba(255,80,80,0.06); }
-    .btn-goal.minus:hover { background:rgba(255,80,80,0.14); box-shadow:0 0 14px rgba(255,80,80,0.35); }
-    .btn-goal.minus:active { background:rgba(255,80,80,0.28); box-shadow:0 0 24px rgba(255,80,80,0.65); transform:scale(0.93); }
-
-    /* VS */
-    .vs-center { display:flex; flex-direction:column; align-items:center; gap:6px; }
-    .vs-text { font-family:'Orbitron',monospace; font-size:22px; font-weight:900; color:var(--neon-vs); text-shadow:0 0 12px var(--neon-vs),0 0 30px rgba(255,224,51,0.5),0 0 60px rgba(255,224,51,0.2); letter-spacing:2px; }
-
-    /* Info row */
-    .info-section { padding:12px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-    .info-item { display:flex; flex-direction:column; gap:3px; }
-    .info-item label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); }
-    .info-item span { font-family:'Orbitron',monospace; font-size:13px; font-weight:700; color:var(--text-primary); }
-
-    /* Messenger */
-    .messenger-section { padding:22px 24px; }
-    .messenger-section h3 { font-family:'Orbitron',monospace; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:16px; }
-    .messenger-options { display:flex; gap:12px; flex-wrap:wrap; }
-    .messenger-btn { flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:10px; padding:14px 20px; border-radius:14px; border:1.5px solid var(--glass-border); background:var(--glass-bg); color:var(--text-primary); font-family:'Inter',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s ease; }
-    .messenger-btn:hover { transform:translateY(-2px); }
-    .messenger-btn.whatsapp:hover, .messenger-btn.whatsapp.active { border-color:rgba(37,211,102,0.5); background:rgba(37,211,102,0.08); box-shadow:0 0 20px rgba(37,211,102,0.2); }
-    .messenger-btn.telegram:hover, .messenger-btn.telegram.active { border-color:rgba(41,182,246,0.5); background:rgba(41,182,246,0.08); box-shadow:0 0 20px rgba(41,182,246,0.2); }
-    .selected-badge { font-size:9px; letter-spacing:1px; background:rgba(255,255,255,0.1); border-radius:4px; padding:2px 6px; text-transform:uppercase; color:var(--text-muted); }
-
-    /* Share */
-    .share-btn { width:100%; padding:16px; border-radius:14px; border:none; background:linear-gradient(135deg,#00b4db,#0083b0); color:#fff; font-family:'Orbitron',monospace; font-size:13px; font-weight:700; letter-spacing:1.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.2s ease; box-shadow:0 4px 20px rgba(0,180,219,0.35); }
-    .share-btn:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,180,219,0.5); }
-    .share-btn:active { transform:scale(0.98); }
-
-    /* ── Wallet Prediction Section ── */
-    .wallet-section { padding: 26px 24px 24px; }
-    .wallet-section h3 {
-      font-family: 'Orbitron', monospace;
-      font-size: 15px; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 8px;
-    }
-    .wallet-subtext {
-      font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 22px; line-height: 1.6;
-    }
-    .wallet-section h3 {
-      font-family: 'Orbitron', monospace;
-      font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 6px;
-    }
-    .wallet-subtext {
-      font-size: 11.5px; color: rgba(255,255,255,0.4); margin-bottom: 18px; line-height: 1.5;
-    }
-
-    .wallet-field { position: relative; margin-bottom: 14px; }
-    .wallet-field label {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; letter-spacing: 1px; color: var(--text-muted);
-      margin-bottom: 8px; text-transform: uppercase;
-    }
-    .wallet-field label svg { flex-shrink: 0; }
-
-    .wallet-input-wrap { position: relative; }
-    .wallet-input {
-      width: 100%;
-      padding: 17px 52px 17px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border: 1.5px solid rgba(255,255,255,0.12);
-      color: var(--text-primary);
-      font-family: 'Inter', monospace;
-      font-size: 15px; letter-spacing: 0.3px;
-      outline: none;
-      transition: all 0.25s ease;
-    }
-    .wallet-input::placeholder { color: rgba(255,255,255,0.25); font-family: 'Inter', sans-serif; }
-    .wallet-input:focus {
-      border-color: rgba(0,212,255,0.55);
-      background: rgba(0,212,255,0.04);
+    /* Static outer ring */
+    .logo-halo::after{
+      content:'';
+      position:absolute;inset:3px;border-radius:50%;
+      border:1px solid rgba(0,212,255,0.15);
       box-shadow:
-        0 0 0 3px rgba(0,212,255,0.10),
-        0 0 24px rgba(0,212,255,0.18),
-        inset 0 1px 1px rgba(255,255,255,0.05);
-    }
-    .wallet-input.valid {
-      border-color: rgba(0,255,136,0.5);
-      box-shadow: 0 0 0 3px rgba(0,255,136,0.08), 0 0 20px rgba(0,255,136,0.15);
-    }
-    .wallet-chip {
-      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      font-family: 'Orbitron', monospace;
-      font-size: 9px; font-weight: 700; letter-spacing: 1px;
-      color: #00d4ff;
-      background: rgba(0,212,255,0.1);
-      border: 1px solid rgba(0,212,255,0.3);
-      padding: 4px 8px; border-radius: 8px;
-      pointer-events: none;
+        0 0 0 3px rgba(0,212,255,0.06),
+        0 0 18px rgba(0,212,255,0.18),
+        0 0 36px rgba(0,212,255,0.08);
     }
 
-    .wallet-hint {
-      display: flex; align-items: flex-start; gap: 7px;
-      margin-top: 10px;
-      font-size: 11px; line-height: 1.5;
-      color: rgba(255,202,40,0.75);
+    /* Inner glass circle */
+    .logo-ring{
+      width:72px;height:72px;border-radius:50%;
+      background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.08) 0%,rgba(12,25,41,0.95) 70%);
+      border:1.5px solid rgba(255,255,255,0.12);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;position:relative;z-index:2;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.10),
+        inset 0 -1px 1px rgba(0,0,0,0.3),
+        0 4px 16px rgba(0,0,0,0.5);
+      transition:box-shadow 0.3s ease;
     }
-    .wallet-hint svg { flex-shrink: 0; margin-top: 1px; }
-
-    .wallet-receive-note {
-      display: flex; align-items: center; gap: 7px;
-      margin-top: 16px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: rgba(0,255,136,0.05);
-      border: 1px solid rgba(0,255,136,0.15);
-      font-size: 11px; color: rgba(0,255,136,0.85);
+    .logo-ring:hover{
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.14),
+        0 0 0 2px rgba(0,212,255,0.35),
+        0 0 22px rgba(0,212,255,0.28),
+        0 4px 16px rgba(0,0,0,0.5);
     }
-    .wallet-receive-note svg { flex-shrink: 0; }
-
-    .submit-predict-btn {
-      width: 100%;
-      margin-top: 22px;
-      padding: 20px;
-      border-radius: 14px;
-      border: none;
-      background: linear-gradient(135deg, #ffe033 0%, #ffb700 100%);
-      color: #1a1305;
-      font-family: 'Orbitron', monospace;
-      font-size: 15px; font-weight: 900; letter-spacing: 1.5px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 24px rgba(255, 224, 51, 0.3), 0 0 0 1px rgba(255,224,51,0.2);
-      position: relative;
-      overflow: hidden;
+    .logo-ring img{
+      width:100%;height:100%;object-fit:contain;padding:10px;
+      position:relative;z-index:2;
+      filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));
     }
-    .submit-predict-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 36px rgba(255, 224, 51, 0.5), 0 0 0 1px rgba(255,224,51,0.3);
-    }
-    .submit-predict-btn:active { transform: scale(0.98); }
-    .submit-predict-btn:disabled {
-      opacity: 0.4; cursor: not-allowed; transform: none;
-      box-shadow: none;
+    .logo-ring .emoji{
+      font-size:30px;position:relative;z-index:2;
+      filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));
     }
 
-    /* ── Winner Modal ── */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(3,7,12,0.75);
-      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s ease;
-      padding: 20px;
-    }
-    .modal-overlay.show { opacity: 1; pointer-events: all; }
-
-    .modal-box {
-      width: 100%; max-width: 380px;
-      background: linear-gradient(145deg, rgba(16,31,50,0.95), rgba(6,11,17,0.97));
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0,212,255,0.25);
-      border-radius: 22px;
-      padding: 32px 26px 26px;
-      text-align: center;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 20px 60px rgba(0,0,0,0.5), 0 0 60px rgba(0,212,255,0.1);
-      transform: scale(0.92) translateY(10px);
-      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
-    }
-    .modal-overlay.show .modal-box { transform: scale(1) translateY(0); }
-
-    .modal-icon {
-      width: 60px; height: 60px;
-      margin: 0 auto 18px;
-      border-radius: 50%;
-      background: rgba(255,224,51,0.08);
-      border: 1px solid rgba(255,224,51,0.3);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 30px rgba(255,224,51,0.2);
-    }
-    .modal-box h2 {
-      font-family: 'Orbitron', monospace;
-      font-size: 18px; font-weight: 900; letter-spacing: 1px;
-      color: var(--neon-vs);
-      text-shadow: 0 0 16px rgba(255,224,51,0.5);
-      margin-bottom: 12px;
-    }
-    .modal-box p {
-      font-size: 13.5px; line-height: 1.6;
-      color: rgba(232,244,253,0.75);
-      margin-bottom: 22px;
-    }
-    .modal-box p strong { color: #fff; }
-    .modal-close-btn {
-      width: 100%; padding: 13px;
-      border-radius: 12px; border: 1px solid rgba(0,212,255,0.3);
-      background: rgba(0,212,255,0.08);
-      color: var(--neon-cyan);
-      font-family: 'Orbitron', monospace;
-      font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
-      cursor: pointer; transition: all 0.2s ease;
-    }
-    .modal-close-btn:hover {
-      background: rgba(0,212,255,0.15);
-      box-shadow: 0 0 20px rgba(0,212,255,0.25);
+    /* USDT watermark behind logo */
+    .logo-ring::before{
+      content:'T';
+      position:absolute;inset:0;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Orbitron',monospace;font-size:42px;font-weight:900;
+      color:rgba(38,161,123,0.06);
+      z-index:1;letter-spacing:0;
     }
 
-    /* Toast */
-    .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); background:rgba(0,255,136,0.12); border:1px solid rgba(0,255,136,0.3); backdrop-filter:blur(12px); border-radius:12px; padding:12px 24px; font-size:13px; color:var(--neon-green); letter-spacing:1px; box-shadow:0 0 24px rgba(0,255,136,0.2); transition:transform 0.35s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; }
-    .toast.show { transform:translateX(-50%) translateY(0); }
-
-    /* Responsive */
-    @media(max-width:480px){
-      .logo-ring{width:68px;height:68px;}
-      .team-name{font-size:11px;}
-      .score-num{font-size:38px;}
-      .vs-text{font-size:16px;}
-      .info-section{flex-direction:column;gap:10px;}
+    /* Team name — styled badge */
+    .tname{
+      font-family:'Orbitron',monospace;font-size:10px;font-weight:700;
+      letter-spacing:.8px;text-align:center;
+      padding:4px 10px;border-radius:20px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      color:rgba(232,244,253,0.85);
+      max-width:110px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
+
+    .score-col{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .score-num{font-family:'Orbitron',monospace;font-size:38px;font-weight:900;min-width:44px;text-align:center;text-shadow:0 0 18px rgba(255,255,255,0.18)}
+    .btn-g{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(0,255,136,0.32);background:rgba(0,255,136,0.06);color:var(--green);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s;text-shadow:0 0 7px var(--green)}
+    .btn-g:hover{background:rgba(0,255,136,.14);box-shadow:0 0 12px rgba(0,255,136,.38)}
+    .btn-g:active{transform:scale(.92);box-shadow:0 0 22px rgba(0,255,136,.65)}
+    .btn-g.m{border-color:rgba(255,80,80,.32);color:#ff6b6b;text-shadow:0 0 7px #ff6b6b;background:rgba(255,80,80,.06)}
+    .btn-g.m:hover{background:rgba(255,80,80,.13);box-shadow:0 0 12px rgba(255,80,80,.32)}
+    .btn-g.m:active{transform:scale(.92);box-shadow:0 0 22px rgba(255,80,80,.6)}
+
+    .vs-col{display:flex;align-items:center;justify-content:center}
+    .vs-txt{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:var(--gold);text-shadow:0 0 10px var(--gold),0 0 28px rgba(255,224,51,.45)}
+
+    /* ── Info strip ─────────────────────────────────── */
+    .info-strip{padding:11px 16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .info-item{display:flex;flex-direction:column;gap:2px}
+    .info-item label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+    .info-item span{font-family:'Orbitron',monospace;font-size:11px;font-weight:700}
+
+    /* ════════════════════════════════════════════════
+       WALLET / PREDICTION FORM
+    ════════════════════════════════════════════════ */
+    .form-card{padding:20px 16px 18px}
+    .form-card h3{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+    .form-sub{font-size:11px;color:rgba(255,255,255,.36);margin-bottom:16px;line-height:1.5}
+    .form-sub strong{color:rgba(255,255,255,.68)}
+
+    .field{margin-bottom:12px}
+    .field-lbl{display:flex;align-items:center;gap:5px;font-size:9.5px;letter-spacing:1px;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+    .field-wrap{position:relative}
+    .field-input{
+      width:100%;padding:13px 46px 13px 13px;
+      border-radius:12px;
+      background:rgba(255,255,255,0.03);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      border:1.5px solid rgba(255,255,255,0.11);
+      color:var(--fg);font-family:'Inter',monospace;font-size:13.5px;
+      outline:none;transition:all .22s;
+    }
+    .field-input::placeholder{color:rgba(255,255,255,.2);font-family:'Inter',sans-serif}
+    .field-input:focus{border-color:rgba(0,212,255,.52);background:rgba(0,212,255,.04);box-shadow:0 0 0 3px rgba(0,212,255,.09),0 0 20px rgba(0,212,255,.14)}
+    .field-input.valid{border-color:rgba(0,255,136,.48);box-shadow:0 0 0 3px rgba(0,255,136,.07),0 0 16px rgba(0,255,136,.12)}
+    .field-chip{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:1px;padding:3px 6px;border-radius:6px;pointer-events:none}
+    .chip-usdt{color:#00d4ff;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.28)}
+    .chip-user{color:#ffe033;background:rgba(255,224,51,.1);border:1px solid rgba(255,224,51,.28)}
+
+    .field-hint{display:flex;align-items:flex-start;gap:5px;margin-top:6px;font-size:10px;line-height:1.45;color:rgba(255,202,40,.68)}
+    .field-hint.blue{color:rgba(0,212,255,.6)}
+    .field-hint svg{flex-shrink:0;margin-top:1px}
+
+    .receive-note{display:flex;align-items:center;gap:6px;margin-top:12px;padding:9px 12px;border-radius:10px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.14);font-size:10px;color:rgba(0,255,136,.78);line-height:1.4}
+    .receive-note svg{flex-shrink:0}
+
+    .submit-btn{
+      width:100%;margin-top:16px;padding:16px;
+      border-radius:13px;border:none;
+      background:linear-gradient(135deg,#ffe033 0%,#ffb700 100%);
+      color:#1a1305;font-family:'Orbitron',monospace;font-size:13px;font-weight:900;letter-spacing:1.5px;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
+      transition:all .18s;box-shadow:0 4px 20px rgba(255,224,51,.28),0 0 0 1px rgba(255,224,51,.18);
+    }
+    .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,224,51,.45)}
+    .submit-btn:active{transform:scale(.98)}
+
+    /* ── Loading skeleton ────────────────────────────── */
+    .skeleton-bar{height:1em;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:skel 1.4s ease-in-out infinite}
+    @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* ── Modal ──────────────────────────────────────── */
+    .modal-ov{position:fixed;inset:0;background:rgba(3,7,12,.78);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .22s;padding:18px}
+    .modal-ov.show{opacity:1;pointer-events:all}
+    .modal-box{width:100%;max-width:340px;background:linear-gradient(145deg,rgba(15,29,48,.97),rgba(6,11,17,.98));border:1px solid rgba(0,212,255,.22);border-radius:20px;padding:28px 22px 22px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 50px rgba(0,212,255,.08);transform:scale(.93) translateY(8px);transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+    .modal-ov.show .modal-box{transform:scale(1) translateY(0)}
+    .modal-icon{width:52px;height:52px;margin:0 auto 14px;border-radius:50%;background:rgba(255,224,51,.08);border:1px solid rgba(255,224,51,.28);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(255,224,51,.18)}
+    .modal-box h2{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:var(--gold);text-shadow:0 0 14px rgba(255,224,51,.45);margin-bottom:10px}
+    .modal-box p{font-size:12.5px;line-height:1.65;color:rgba(232,244,253,.7);margin-bottom:18px}
+    .modal-box p strong{color:#fff}
+    .modal-btn{width:100%;padding:12px;border-radius:11px;border:1px solid rgba(0,212,255,.28);background:rgba(0,212,255,.08);color:var(--cyan);font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .18s}
+    .modal-btn:hover{background:rgba(0,212,255,.16);box-shadow:0 0 18px rgba(0,212,255,.22)}
+
+    /* ── Toast ──────────────────────────────────────── */
+    .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(70px);background:rgba(0,255,136,.11);border:1px solid rgba(0,255,136,.28);backdrop-filter:blur(10px);border-radius:11px;padding:10px 20px;font-size:12.5px;color:var(--green);letter-spacing:.8px;box-shadow:0 0 20px rgba(0,255,136,.18);transition:transform .32s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
-  <div class="stadium-light tr"></div>
-  <div class="stadium-light bl"></div>
+<div class="wrap">
 
-  <div class="container">
-
-    <!-- ═══ TOP BAR: logo · title · countdown all in one row ═══ -->
-    <div class="top-bar">
-
-      <!-- USDT coin -->
-      <div class="hero-usdt-ring">
-        <img src="/mnt/user-data/uploads/images.png" alt="USDT" class="hero-usdt-logo" />
-      </div>
-
-      <!-- Title + description -->
-      <div class="hero-text">
-        <div class="hero-eyebrow">
-          <span class="hero-dot"></span>PRONÓSTICOS EN VIVO
-        </div>
-        <div class="hero-title">
-          <span class="hero-title-line1">PREDICE</span>
-          <span class="hero-title-line2">Y GANA <em>USDT</em></span>
-        </div>
-        <p class="hero-subtitle">
-          <strong>3 primeros</strong> en acertar · Premio red <strong>TON</strong>
-        </p>
-      </div>
-
-      <!-- Countdown inline -->
-      <div class="timer-inline">
-        <div class="timer-inline-label">TIEMPO</div>
-        <div class="timer-inline-digits">
-          <span id="cd-days">00</span><span class="tc">:</span><span id="cd-hours">00</span><span class="tc">:</span><span id="cd-minutes">00</span><span class="tc">:</span><span id="cd-seconds">00</span>
-        </div>
-      </div>
-
+  <!-- ═══ HEADER ═══ -->
+  <div class="hdr">
+    <div class="hdr-badge">
+      ⚽ PRONÓSTICOS EN VIVO
     </div>
-
-    <!-- EN VIVO · forecast micro-bar -->
-    <div class="live-status-bar">
-      <div class="live-status-pill">
-        <div class="live-dot-core"></div>
-        <span class="live-status-text" id="live-badge-sub">EN VIVO · COBERTURA DE ÉLITE</span>
-      </div>
-      <div class="forecast-pill">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="#ffca28"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm.5 5v6l5 3-.75 1.23L11 14V7h1.5z"/></svg>
-        El pronóstico cierra al inicio del partido
-      </div>
+    <div class="hdr-title-row">
+      <img src="/mnt/user-data/uploads/images.png" alt="USDT" class="hdr-usdt"/>
+      <div class="hdr-title">PREDICE Y GANA</div>
     </div>
-
-    <!-- hidden old sections (kept for JS goLive() targeting) -->
-    <section class="timer-section" style="display:none">
-      <div id="timer-label"></div>
-      <div id="timer-digits"></div>
-      <div class="forecast-notice" id="forecast-notice"></div>
-      <div class="live-badge-wrap"></div>
-    </section>
+    <div class="hdr-sub" id="hdr-sub">
+      <div class="hdr-sub-pill">
+        <span class="hdr-sub-tournament" id="hdr-tournament">CARGANDO…</span>
+        <span class="hdr-sub-dot"></span>
+        <span class="hdr-sub-stadium" id="hdr-stadium">—</span>
+        <span class="hdr-sub-dot"></span>
+        <span class="hdr-sub-time" id="hdr-time">—:—</span>
       </div>
-    </section>
-
-    <!-- Match Card -->
-    <section class="glass match-card">
-      <div class="teams-row">
-
-        <div class="team">
-          <div class="logo-ring">
-            <span class="logo-placeholder">🦅</span>
-          </div>
-          <div class="team-name">CLUB AMÉRICA</div>
-          <div class="score-block">
-            <button class="btn-goal" onclick="changeScore('home',1)">+</button>
-            <div class="score-num" id="home-score">0</div>
-            <button class="btn-goal minus" onclick="changeScore('home',-1)">−</button>
-          </div>
-        </div>
-
-        <div class="vs-center">
-          <span class="vs-text">VS</span>
-        </div>
-
-        <div class="team">
-          <div class="logo-ring">
-            <span class="logo-placeholder">🐐</span>
-          </div>
-          <div class="team-name">CHIVAS GDL</div>
-          <div class="score-block">
-            <button class="btn-goal" onclick="changeScore('away',1)">+</button>
-            <div class="score-num" id="away-score">0</div>
-            <button class="btn-goal minus" onclick="changeScore('away',-1)">−</button>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Wallet & Submit Prediction -->
-    <section class="glass wallet-section">
-      <h3>Tu Billetera USDT · Red TON</h3>
-      <p class="wallet-subtext">Ingresa la dirección donde deseas <strong>recibir</strong> tu premio si tu pronóstico es uno de los 3 primeros aciertos.</p>
-
-      <div class="wallet-field">
-        <label>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="#00d4ff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          Tu Nombre de Usuario
-        </label>
-        <div class="wallet-input-wrap">
-          <input
-            type="text"
-            id="username"
-            class="wallet-input"
-            placeholder="@tu_usuario"
-            autocomplete="off"
-            spellcheck="false"
-            maxlength="32"
-            oninput="validateUsername()"
-          />
-          <span class="wallet-chip" style="color:#ffe033;background:rgba(255,224,51,0.1);border-color:rgba(255,224,51,0.3);">USER</span>
-        </div>
-        <div class="wallet-hint" style="color:rgba(0,212,255,0.65);">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm.5 5v6l5 3-.75 1.23L11 14V7h1.5z"/></svg>
-          Este nombre aparecerá en el ranking de ganadores si tu pronóstico acierta.
-        </div>
-      </div>
-
-      <div class="wallet-field">
-        <label>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="#00d4ff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-          Dirección de Billetera (TON)
-        </label>
-        <div class="wallet-input-wrap">
-          <input
-            type="text"
-            id="wallet-address"
-            class="wallet-input"
-            placeholder="EQAbc123...xyz789"
-            autocomplete="off"
-            spellcheck="false"
-            oninput="validateWallet()"
-          />
-          <span class="wallet-chip">USDT</span>
-        </div>
-        <div class="wallet-hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="margin-top:1px"><path d="M12 2L1 21h22L12 2zm0 4.2L19.5 19h-15L12 6.2zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
-          Verifica que la dirección sea correcta. Este campo es solo para <strong>recibir</strong> tu premio — nunca se te pedirá enviar fondos.
-        </div>
-      </div>
-
-      <div class="wallet-receive-note">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        Solo se almacena tu dirección para el envío del premio — no se requiere conexión de billetera ni firma de transacciones.
-      </div>
-
-      <button class="submit-predict-btn" id="submit-predict-btn" onclick="submitPrediction()">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="#1a1305"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        ENVIAR PRONÓSTICO
-      </button>
-    </section>
-
-    <!-- Info Row -->
-    <section class="glass info-section">
-      <div class="info-item"><label>Estadio</label><span>Azteca</span></div>
-      <div class="info-item"><label>Horario</label><span>20:00 CST</span></div>
-      <div class="info-item"><label>Jornada</label><span>J12</span></div>
-      <div class="info-item"><label>Temporada</label><span>AP2025</span></div>
-    </section>
-
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <!-- Winner Rules Modal -->
-  <div class="modal-overlay" id="winner-modal">
-    <div class="modal-box">
-      <div class="modal-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="#ffe033"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      </div>
-      <h2>¡Pronóstico Recibido!</h2>
-      <p>
-        Tu pronóstico ha sido registrado correctamente.<br><br>
-        <strong>Solo los 3 primeros usuarios</strong> que acierten el resultado exacto del partido serán los ganadores del premio en USDT (Red TON).<br><br>
-        El premio se enviará automáticamente a la dirección que ingresaste, una vez finalizado el partido y verificado el resultado.
-      </p>
-      <button class="modal-close-btn" onclick="closeModal()">ENTENDIDO</button>
     </div>
   </div>
 
-  <script>
-    // ── Config: cambia esta fecha a la del partido real ──────────────
-    // Formato: YYYY-MM-DDTHH:MM:SS  (hora local del partido)
-    // Para prueba rápida pon una fecha futura, p.ej. 2 días desde hoy:
-    var matchDate = new Date();
-    matchDate.setDate(matchDate.getDate() + 2);
-    matchDate.setHours(20, 0, 0, 0);
-    // ─────────────────────────────────────────────────────────────────
+  <!-- ═══ COUNTDOWN ═══ -->
+  <div class="card timer-card">
+    <div class="timer-lbl" id="timer-lbl">TIEMPO PARA EL PARTIDO</div>
+    <div class="timer-digits" id="timer-digits">
+      <div class="tseg"><span id="cd-d">00</span><span class="tunit">Días</span></div>
+      <span class="tcolon">:</span>
+      <div class="tseg"><span id="cd-h">00</span><span class="tunit">Horas</span></div>
+      <span class="tcolon">:</span>
+      <div class="tseg"><span id="cd-m">00</span><span class="tunit">Min</span></div>
+      <span class="tcolon">:</span>
+      <div class="tseg"><span id="cd-s">00</span><span class="tunit">Seg</span></div>
+    </div>
+    <div class="forecast" id="forecast">
+      <div class="forecast-inner">
+        <div class="forecast-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#ffca28"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm.5 5v6l5 3-.75 1.23L11 14V7h1.5z"/></svg>
+        </div>
+        <div class="forecast-text">
+          <span class="forecast-label">Aviso importante</span>
+          <span class="forecast-msg">El pronóstico cierra al inicio del partido</span>
+        </div>
+      </div>
+    </div>
+    <div class="live-wrap">
+      <div class="live-pill">
+        <div class="live-dot">
+          <div class="live-dot-ring"></div><div class="live-dot-ring2"></div>
+          <div class="live-dot-core"></div>
+        </div>
+        <div class="live-sep"></div>
+        <div class="live-text">
+          <span class="live-top">EN VIVO</span>
+          <span class="live-sub" id="live-sub">COBERTURA DE ÉLITE</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    var scores   = { home: 0, away: 0 };
-    var timerID   = null;
-    var isLive    = false;
+  <!-- ═══ MATCH CARD ═══ -->
+  <div class="card match-card">
+    <div class="teams">
+      <div class="team">
+        <div class="logo-ring" id="home-logo-wrap">
+          <span class="emoji" id="home-emoji">⚽</span>
+        </div>
+        <div class="tname" id="home-name">Cargando…</div>
+        <div class="score-col">
+          <button class="btn-g" onclick="changeScore('home',1)">+</button>
+          <div class="score-num" id="home-score">0</div>
+          <button class="btn-g m" onclick="changeScore('home',-1)">−</button>
+        </div>
+      </div>
+      <div class="vs-col"><span class="vs-txt">VS</span></div>
+      <div class="team">
+        <div class="logo-ring" id="away-logo-wrap">
+          <span class="emoji" id="away-emoji">🏆</span>
+        </div>
+        <div class="tname" id="away-name">Cargando…</div>
+        <div class="score-col">
+          <button class="btn-g" onclick="changeScore('away',1)">+</button>
+          <div class="score-num" id="away-score">0</div>
+          <button class="btn-g m" onclick="changeScore('away',-1)">−</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    function pad(n) { return String(Math.floor(n)).padStart(2, '0'); }
+  <!-- ═══ INFO STRIP ═══ -->
+  <div class="card info-strip">
+    <div class="info-item"><label>Estadio</label><span id="i-stad">—</span></div>
+    <div class="info-item"><label>Horario</label><span id="i-time">—</span></div>
+    <div class="info-item"><label>Torneo</label><span id="i-badge">—</span></div>
+    <div class="info-item"><label>Categoría</label><span id="i-tier">—</span></div>
+  </div>
 
-    function tick() {
-      var now  = Date.now();
-      var diff = matchDate.getTime() - now;
+  <!-- ═══ PREDICTION FORM ═══ -->
+  <div class="card form-card">
+    <h3>Tu Billetera USDT · Red TON</h3>
+    <p class="form-sub">Ingresa tu nombre y dirección para <strong>recibir</strong> tu premio si eres uno de los <strong>3 primeros</strong> en acertar.</p>
 
-      if (diff <= 0 && !isLive) {
-        isLive = true;
-        clearInterval(timerID);
-        goLive();
-        return;
-      }
-      if (isLive) return;
+    <!-- Username -->
+    <div class="field">
+      <div class="field-lbl">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="#00d4ff"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        Tu Nombre de Usuario
+      </div>
+      <div class="field-wrap">
+        <input type="text" id="username" class="field-input" placeholder="@tu_usuario"
+          autocomplete="off" spellcheck="false" maxlength="32" oninput="valUser()"/>
+        <span class="field-chip chip-user">USER</span>
+      </div>
+      <div class="field-hint blue">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm.5 5v6l5 3-.75 1.23L11 14V7h1.5z"/></svg>
+        Aparecerá en el ranking de ganadores si tu pronóstico acierta.
+      </div>
+    </div>
 
-      var totalSec = Math.floor(diff / 1000);
-      var d = Math.floor(totalSec / 86400);
-      var h = Math.floor((totalSec % 86400) / 3600);
-      var m = Math.floor((totalSec % 3600)  / 60);
-      var s = totalSec % 60;
+    <!-- Wallet -->
+    <div class="field">
+      <div class="field-lbl">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="#00d4ff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        Dirección de Billetera (TON)
+      </div>
+      <div class="field-wrap">
+        <input type="text" id="wallet" class="field-input" placeholder="EQAbc123...xyz789"
+          autocomplete="off" spellcheck="false" oninput="valWallet()"/>
+        <span class="field-chip chip-usdt">USDT</span>
+      </div>
+      <div class="field-hint">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 4.2L19.5 19h-15L12 6.2zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+        Solo para <strong>recibir</strong> tu premio — nunca se pedirá enviar fondos ni conectar tu billetera.
+      </div>
+    </div>
 
-      document.getElementById('cd-days').textContent    = pad(d);
-      document.getElementById('cd-hours').textContent   = pad(h);
-      document.getElementById('cd-minutes').textContent = pad(m);
-      document.getElementById('cd-seconds').textContent = pad(s);
+    <div class="receive-note">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      No se requiere firma ni conexión de billetera.
+    </div>
+
+    <button class="submit-btn" onclick="submit()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="#1a1305"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      ENVIAR PRONÓSTICO
+    </button>
+  </div>
+
+</div><!-- /wrap -->
+
+<div class="toast" id="toast"></div>
+
+<!-- Modal -->
+<div class="modal-ov" id="modal">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffe033"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    </div>
+    <h2>¡Pronóstico Recibido!</h2>
+    <p>Tu pronóstico ha sido registrado.<br><br>
+    <strong>Solo los 3 primeros</strong> en acertar el resultado exacto ganarán el premio en USDT (Red TON).<br><br>
+    El premio se enviará automáticamente a tu dirección una vez finalizado el partido.</p>
+    <button class="modal-btn" onclick="closeModal()">ENTENDIDO</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG — replace with your real Supabase credentials
+   (public anon key only — read access, no secrets here)
+═══════════════════════════════════════════════════════════════ */
+var SUPABASE_URL = "https://lmcnhnykecereeoctewb.supabase.co";
+var SUPABASE_ANON_KEY = "sb_publishable_zuUdgIwhxmVXssULXB6BsQ_m0xgYMD9";
+
+/* ── Emoji fallbacks per tier ────────────────────────────────── */
+var TIER_EMOJI = { 1:"🌎", 2:"⚽", 3:"🏆" };
+
+/* ── Team emoji map (expandable) ────────────────────────────── */
+var TEAM_EMOJI = {
+  "argentina":"🇦🇷","brasil":"🇧🇷","brazil":"🇧🇷","españa":"🇪🇸","spain":"🇪🇸",
+  "france":"🇫🇷","francia":"🇫🇷","germany":"🇩🇪","alemania":"🇩🇪",
+  "real madrid":"⚪","barcelona":"🔵","manchester city":"🔵","arsenal":"🔴",
+  "ac milan":"⚫","inter":"🟦","liverpool":"🔴","chelsea":"🔵",
+  "flamengo":"🔴","boca juniors":"🟡","river plate":"⚪",
+  "palmeiras":"🟢","atletico mineiro":"⚫",
+};
+function teamEmoji(name){
+  if(!name) return "⚽";
+  var k=name.toLowerCase();
+  for(var t in TEAM_EMOJI){ if(k.includes(t)) return TEAM_EMOJI[t]; }
+  return "⚽";
+}
+
+/* ── State ───────────────────────────────────────────────────── */
+var scores={home:0,away:0}, timerID=null, isLive=false, activeKO=null;
+
+/* ═══════════════════════════════════════════════════════════════
+   FETCH MATCH FROM SUPABASE CACHE
+═══════════════════════════════════════════════════════════════ */
+async function loadMatch(){
+  try{
+    var res = await fetch(
+      SUPABASE_URL+"/rest/v1/featured_match?id=eq.1&select=*&limit=1",
+      { headers:{
+          "apikey":        SUPABASE_ANON_KEY,
+          "Authorization": "Bearer "+SUPABASE_ANON_KEY,
+          "Content-Type":  "application/json",
+          "Accept":        "application/json"
+      }}
+    );
+    if(!res.ok){
+      var errText = await res.text();
+      console.warn("Supabase HTTP "+res.status+":", errText);
+      throw new Error("Supabase "+res.status);
     }
+    var rows = await res.json();
+    if(!rows || !rows.length){ setWaiting(); return; }
+    var m = rows[0];
+    if(m.status==="waiting" || !m.kickoff_utc){ setWaiting(); return; }
+    renderMatch(m);
+  } catch(e){
+    console.warn("Supabase load failed, using fallback:", e.message);
+    renderFallback();
+  }
+}
 
-    function goLive() {
-      // Ocultar pronóstico
-      var fn = document.getElementById('forecast-notice');
-      if (fn) fn.style.display = 'none';
+/* ── Render data from Supabase row ───────────────────────────── */
+function renderMatch(m){
+  // Header sub — dynamic pills
+  var koDate = new Date(m.kickoff_utc);
+  var timeStr = koDate.getHours().toString().padStart(2,"0")+":"+koDate.getMinutes().toString().padStart(2,"0");
+  // strip emoji from badge for the tournament label
+  var tournament = (m.badge||m.tournament||"").replace(/^\p{Emoji}+\s*/u,"").trim() || (m.tournament||"");
+  setText("hdr-tournament", tournament.toUpperCase());
+  setText("hdr-stadium",    m.stadium||"—");
+  setText("hdr-time",       timeStr);
+  // legacy fallback id
+  setText("hdr-sub", ""); // clear any text fallback
 
-      // Reemplazar dígitos con texto EN VIVO
-      var dg = document.getElementById('timer-digits');
-      if (dg) {
-        dg.style.fontSize     = 'clamp(26px,7vw,48px)';
-        dg.style.letterSpacing = '4px';
-        dg.innerHTML = '<span style="color:#00ffb8;text-shadow:0 0 16px #00ffb8,0 0 40px rgba(0,255,184,0.5)">¡PARTIDO EN CURSO!</span>';
-      }
+  // Team names + logos
+  setText("home-name", m.home_team||"Local");
+  setText("away-name",  m.away_team||"Visitante");
 
-      // Actualizar etiqueta
-      var lbl = document.getElementById('timer-label');
-      if (lbl) lbl.textContent = 'Acción en tiempo real';
+  if(m.home_logo) setTeamLogo("home-logo-wrap","home-emoji",m.home_logo,m.home_team);
+  else setText("home-emoji", teamEmoji(m.home_team));
+  if(m.away_logo) setTeamLogo("away-logo-wrap","away-emoji",m.away_logo,m.away_team);
+  else setText("away-emoji", teamEmoji(m.away_team));
 
-      // Actualizar sub-badge
-      var sub = document.getElementById('live-badge-sub');
-      if (sub) sub.textContent = 'ACCIÓN EN TIEMPO REAL';
-    }
+  // Info strip
+  setText("i-stad",  m.stadium||"—");
+  setText("i-time",  timeStr);
+  setText("i-badge", m.badge||"—");
+  setText("i-tier",  m.tier ? "Tier "+m.tier+" Élite" : "—");
 
-    // Arrancar inmediatamente al cargar
-    tick();
-    timerID = setInterval(tick, 1000);
+  // Start countdown
+  activeKO = koDate;
+  var diff = koDate-Date.now();
+  if(diff<=0) goLive();
+  else if(diff>24*3600*1000) setWaiting();
+  else { tick(); timerID=setInterval(tick,1000); }
+}
 
-    // ── Wallet & Prediction ──────────────────────────────────────────
-    function validateUsername() {
-      var input = document.getElementById('username');
-      var val = input.value.trim();
-      var isValid = val.length >= 2;
-      input.classList.toggle('valid', isValid);
-      return isValid;
-    }
+function setTeamLogo(wrapId, emojiId, logoUrl, teamName){
+  var wrap = document.getElementById(wrapId);
+  if(!wrap) return;
+  var img = document.createElement("img");
+  img.src = logoUrl;
+  img.alt = teamName||"";
+  img.onerror = function(){ this.style.display="none"; document.getElementById(emojiId).style.display=""; };
+  img.style.cssText = "position:relative;z-index:2;width:100%;height:100%;object-fit:contain;padding:8px";
+  document.getElementById(emojiId).style.display = "none";
+  wrap.appendChild(img);
+}
 
-    function validateWallet() {
-      var input = document.getElementById('wallet-address');
-      var val = input.value.trim();
-      // Validación básica de formato TON: empieza con EQ/UQ y longitud típica (~48 chars)
-      var isValid = /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(val);
-      input.classList.toggle('valid', isValid);
-      return isValid;
-    }
+/* ── Fallback data (when Supabase unreachable) ───────────────── */
+function renderFallback(){
+  var fallbacks=[
+    { tier:1, badge:"🌍 MUNDIAL FIFA",     home:"Argentina",   away:"Francia",
+      stadium:"Lusail",          kickoff:_fut(0,21,0) },
+    { tier:1, badge:"🌎 COPA AMÉRICA",     home:"Brasil",      away:"Colombia",
+      stadium:"MetLife Stadium", kickoff:_fut(1,22,0) },
+    { tier:1, badge:"🏆 CHAMPIONS LEAGUE", home:"Real Madrid",  away:"Man City",
+      stadium:"Bernabéu",        kickoff:_fut(2,21,0) },
+    { tier:2, badge:"🇪🇸 LA LIGA",         home:"FC Barcelona", away:"Real Madrid",
+      stadium:"Camp Nou",        kickoff:_fut(3,20,0) },
+    { tier:3, badge:"🌎 LIBERTADORES",     home:"Flamengo",    away:"River Plate",
+      stadium:"Maracanã",        kickoff:_fut(5,21,30) },
+  ];
+  // pick closest upcoming within 24h, else first
+  var now=Date.now(), WIN=24*3600*1000;
+  var match = fallbacks.find(function(f){ var d=f.kickoff-now; return d>=0&&d<=WIN; }) || fallbacks[0];
 
-    function submitPrediction() {
-      var nameInput   = document.getElementById('username');
-      var walletInput = document.getElementById('wallet-address');
-      var name   = nameInput.value.trim();
-      var wallet = walletInput.value.trim();
+  var ko=match.kickoff, ts=ko.getHours().toString().padStart(2,"0")+":"+ko.getMinutes().toString().padStart(2,"0");
+  var tournament = (match.badge||"").replace(/^\p{Emoji}+\s*/u,"").trim();
+  setText("hdr-tournament", tournament.toUpperCase());
+  setText("hdr-stadium",    match.stadium);
+  setText("hdr-time",       ts);
+  setText("home-name", match.home); setText("home-emoji", teamEmoji(match.home));
+  setText("away-name", match.away); setText("away-emoji", teamEmoji(match.away));
+  setText("i-stad",  match.stadium); setText("i-time", ts);
+  setText("i-badge", match.badge);   setText("i-tier", "Tier "+match.tier+" Élite");
+  activeKO=match.kickoff;
+  var diff=match.kickoff-now;
+  if(diff<=0) goLive();
+  else if(diff>WIN) setWaiting();
+  else { tick(); timerID=setInterval(tick,1000); }
+}
 
-      if (!name) {
-        showToast('Por favor ingresa tu nombre de usuario');
-        nameInput.focus();
-        return;
-      }
-      if (!validateUsername()) {
-        showToast('El nombre debe tener al menos 2 caracteres');
-        nameInput.focus();
-        return;
-      }
-      if (!wallet) {
-        showToast('Por favor ingresa tu dirección de billetera');
-        walletInput.focus();
-        return;
-      }
-      if (!validateWallet()) {
-        showToast('Verifica el formato de tu dirección TON');
-        walletInput.focus();
-        return;
-      }
+function _fut(days,hh,mm){
+  var d=new Date(); d.setDate(d.getDate()+days); d.setHours(hh,mm,0,0); return d;
+}
 
-      openModal();
-    }
+/* ═══════════════════════════════════════════════════════════════
+   COUNTDOWN ENGINE
+═══════════════════════════════════════════════════════════════ */
+function pad(n){ return String(Math.floor(n)).padStart(2,"0"); }
 
-    function openModal() {
-      document.getElementById('winner-modal').classList.add('show');
-    }
-    function closeModal() {
-      document.getElementById('winner-modal').classList.remove('show');
-    }
+function tick(){
+  if(!activeKO||isLive) return;
+  var diff=activeKO-Date.now();
+  if(diff<=0){ goLive(); return; }
+  if(diff>24*3600*1000){ setWaiting(); clearInterval(timerID); return; }
+  var tot=Math.floor(diff/1000);
+  se("cd-d",pad(Math.floor(tot/86400)));
+  se("cd-h",pad(Math.floor((tot%86400)/3600)));
+  se("cd-m",pad(Math.floor((tot%3600)/60)));
+  se("cd-s",pad(tot%60));
+}
 
-    // ── Score ────────────────────────────────────────────────────────
-    function changeScore(team, delta) {
-      scores[team] = Math.max(0, scores[team] + delta);
-      document.getElementById(team + '-score').textContent = scores[team];
-    }
+function setWaiting(){
+  clearInterval(timerID);
+  var dg=document.getElementById("timer-digits");
+  if(dg) dg.innerHTML='<span style="font-family:Orbitron,monospace;font-size:clamp(12px,3.6vw,18px);'+
+    'letter-spacing:2px;color:#ffe033;text-shadow:0 0 10px rgba(255,224,51,.65),'+
+    '0 0 24px rgba(255,224,51,.3);font-weight:700">ESPERA EL PRÓXIMO PARTIDO</span>';
+  setText("timer-lbl","PRÓXIMO ENCUENTRO");
+  var fc=document.getElementById("forecast"); if(fc) fc.style.display="none";
+}
 
-    // ── Toast ────────────────────────────────────────────────────────
-    function showToast(text) {
-      var t = document.getElementById('toast');
-      t.textContent = text;
-      t.classList.add('show');
-      setTimeout(function(){ t.classList.remove('show'); }, 2800);
-    }
-  </script>
+function goLive(){
+  isLive=true; clearInterval(timerID);
+  var dg=document.getElementById("timer-digits");
+  if(dg) dg.innerHTML='<span style="font-family:Orbitron,monospace;font-size:clamp(16px,5.5vw,28px);'+
+    'letter-spacing:3px;color:#00ffb8;text-shadow:0 0 12px #00ffb8,0 0 30px rgba(0,255,184,.45);'+
+    'font-weight:900">¡PARTIDO EN CURSO!</span>';
+  setText("timer-lbl","EN VIVO AHORA");
+  var fc=document.getElementById("forecast"); if(fc) fc.style.display="none";
+  setText("live-sub","EN VIVO · ACCIÓN EN TIEMPO REAL");
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORM & ACTIONS
+═══════════════════════════════════════════════════════════════ */
+function valUser(){
+  var i=document.getElementById("username"); if(!i) return false;
+  var ok=i.value.trim().length>=2; i.classList.toggle("valid",ok); return ok;
+}
+function valWallet(){
+  var i=document.getElementById("wallet"); if(!i) return false;
+  var ok=/^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(i.value.trim()); i.classList.toggle("valid",ok); return ok;
+}
+function submit(){
+  var ni=document.getElementById("username"), wi=document.getElementById("wallet");
+  if(!ni.value.trim()){ toast("Por favor ingresa tu nombre de usuario"); ni.focus(); return; }
+  if(!valUser()){ toast("El nombre debe tener al menos 2 caracteres"); ni.focus(); return; }
+  if(!wi.value.trim()){ toast("Por favor ingresa tu dirección de billetera"); wi.focus(); return; }
+  if(!valWallet()){ toast("Verifica el formato de tu dirección TON"); wi.focus(); return; }
+  document.getElementById("modal").classList.add("show");
+}
+function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+function changeScore(t,d){ scores[t]=Math.max(0,scores[t]+d); se(t+"-score",scores[t]); }
+
+/* ── Utils ────────────────────────────────────────────────────── */
+function se(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+function setText(id,v){ se(id,v); }
+var _tid;
+function toast(msg){
+  var t=document.getElementById("toast"); if(!t) return;
+  t.textContent=msg; t.classList.add("show");
+  clearTimeout(_tid); _tid=setTimeout(function(){ t.classList.remove("show"); },2800);
+}
+
+/* ── Boot ──────────────────────────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", loadMatch);
+</script>
 </body>
 </html>

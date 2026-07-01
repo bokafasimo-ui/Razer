@@ -56,7 +56,6 @@
       text-shadow:0 0 7px var(--cyan);
     }
     .hdr-title-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:5px}
-    .hdr-usdt{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(38,161,123,0.4)}
     .hdr-title{
       font-family:'Orbitron',monospace;font-size:clamp(18px,5vw,26px);
       font-weight:900;letter-spacing:1px;
@@ -177,111 +176,161 @@
     .live-sub{font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,255,184,.5)}
 
     /* ════════════════════════════════════════════════
-       MATCH CARD — Premium Logo Design
+       MATCH CARD — Ultra Premium Logo Design
     ════════════════════════════════════════════════ */
-    .match-card{padding:22px 14px 20px}
+    .match-card{padding:18px 12px 16px}
     .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
-    .team{display:flex;flex-direction:column;align-items:center;gap:10px}
+    .team{display:flex;flex-direction:column;align-items:center;gap:8px}
 
-    /* Outer glow halo */
+    /* ── Halo wrapper ── */
     .logo-halo{
       position:relative;
-      width:82px;height:82px;
+      width:72px;height:72px;
       display:flex;align-items:center;justify-content:center;
-      flex-shrink:0;
     }
-    /* Animated conic border layer */
-    .logo-halo::before{
+
+    /* Outer pulse ring */
+    .logo-halo::after{
       content:'';
-      position:absolute;inset:0;border-radius:50%;
+      position:absolute;inset:-5px;border-radius:50%;
       background:conic-gradient(
-        rgba(0,212,255,0) 0deg,
-        rgba(0,212,255,0.9) 90deg,
-        rgba(0,255,136,0.6) 180deg,
-        rgba(0,212,255,0) 270deg
+        rgba(0,212,255,0.0) 0deg,
+        rgba(0,212,255,0.8) 80deg,
+        rgba(0,255,136,0.5) 160deg,
+        rgba(0,212,255,0.0) 240deg
       );
       animation:spin-halo 3s linear infinite;
-      padding:2px;
-      -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-      -webkit-mask-composite:xor;
-      mask-composite:exclude;
+      -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#fff 0);
+      mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#fff 0);
+    }
+    .logo-halo--away::after{
+      background:conic-gradient(
+        rgba(255,107,107,0.0) 0deg,
+        rgba(255,107,107,0.75) 80deg,
+        rgba(255,170,0,0.5) 160deg,
+        rgba(255,107,107,0.0) 240deg
+      );
+      animation:spin-halo 3s linear infinite reverse;
     }
     @keyframes spin-halo{to{transform:rotate(360deg)}}
 
-    /* Static outer ring */
-    .logo-halo::after{
+    /* Static soft glow behind */
+    .logo-halo::before{
       content:'';
-      position:absolute;inset:3px;border-radius:50%;
-      border:1px solid rgba(0,212,255,0.15);
+      position:absolute;inset:-10px;border-radius:50%;
+      background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+      animation:glow-pulse 2.5s ease-in-out infinite;
+    }
+    .logo-halo--away::before{
+      background:radial-gradient(circle,rgba(255,107,107,0.16) 0%,transparent 70%);
+    }
+    @keyframes glow-pulse{0%,100%{opacity:0.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+
+    /* ── Inner glass circle ── */
+    .logo-ring{
+      width:62px;height:62px;border-radius:50%;
+      position:relative;z-index:2;
+      background:radial-gradient(circle at 38% 32%,rgba(255,255,255,0.10) 0%,rgba(8,18,32,0.96) 65%);
+      border:1.5px solid rgba(255,255,255,0.14);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;
       box-shadow:
-        0 0 0 3px rgba(0,212,255,0.06),
-        0 0 18px rgba(0,212,255,0.18),
-        0 0 36px rgba(0,212,255,0.08);
+        inset 0 1px 2px rgba(255,255,255,0.12),
+        inset 0 -2px 4px rgba(0,0,0,0.4),
+        0 6px 20px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.05);
+      transition:transform 0.2s ease,box-shadow 0.2s ease;
+    }
+    .logo-ring:hover{transform:scale(1.04)}
+
+    /* Inner shimmer sweep */
+    .logo-shimmer{
+      position:absolute;inset:0;border-radius:50%;
+      background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 50%,rgba(255,255,255,0.03) 100%);
+      z-index:1;pointer-events:none;
     }
 
-    /* Inner glass circle */
-    .logo-ring{
-      width:72px;height:72px;border-radius:50%;
-      background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.08) 0%,rgba(12,25,41,0.95) 70%);
-      border:1.5px solid rgba(255,255,255,0.12);
-      display:flex;align-items:center;justify-content:center;
-      overflow:hidden;position:relative;z-index:2;
-      box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.10),
-        inset 0 -1px 1px rgba(0,0,0,0.3),
-        0 4px 16px rgba(0,0,0,0.5);
-      transition:box-shadow 0.3s ease;
-    }
-    .logo-ring:hover{
-      box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.14),
-        0 0 0 2px rgba(0,212,255,0.35),
-        0 0 22px rgba(0,212,255,0.28),
-        0 4px 16px rgba(0,0,0,0.5);
-    }
+    /* Team logo image */
     .logo-ring img{
-      width:100%;height:100%;object-fit:contain;padding:10px;
+      width:100%;height:100%;object-fit:contain;padding:9px;
       position:relative;z-index:2;
-      filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+      filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5)) brightness(1.05) saturate(1.1);
     }
     .logo-ring .emoji{
-      font-size:30px;position:relative;z-index:2;
-      filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+      font-size:26px;position:relative;z-index:2;
+      filter:drop-shadow(0 2px 10px rgba(0,0,0,0.6));
     }
 
-    /* USDT watermark behind logo */
-    .logo-ring::before{
-      content:'T';
-      position:absolute;inset:0;
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Orbitron',monospace;font-size:42px;font-weight:900;
-      color:rgba(38,161,123,0.06);
-      z-index:1;letter-spacing:0;
-    }
-
-    /* Team name — styled badge */
+    /* ── Team name pill ── */
     .tname{
-      font-family:'Orbitron',monospace;font-size:10px;font-weight:700;
+      font-family:'Orbitron',monospace;font-size:9.5px;font-weight:700;
       letter-spacing:.8px;text-align:center;
-      padding:4px 10px;border-radius:20px;
+      padding:4px 11px;border-radius:20px;
       background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      color:rgba(232,244,253,0.85);
+      border:1px solid rgba(255,255,255,0.09);
+      color:rgba(232,244,253,0.82);
       max-width:110px;
       white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      box-shadow:0 2px 8px rgba(0,0,0,0.2);
     }
 
-    .score-col{display:flex;flex-direction:column;align-items:center;gap:6px}
-    .score-num{font-family:'Orbitron',monospace;font-size:38px;font-weight:900;min-width:44px;text-align:center;text-shadow:0 0 18px rgba(255,255,255,0.18)}
-    .btn-g{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(0,255,136,0.32);background:rgba(0,255,136,0.06);color:var(--green);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s;text-shadow:0 0 7px var(--green)}
-    .btn-g:hover{background:rgba(0,255,136,.14);box-shadow:0 0 12px rgba(0,255,136,.38)}
-    .btn-g:active{transform:scale(.92);box-shadow:0 0 22px rgba(0,255,136,.65)}
-    .btn-g.m{border-color:rgba(255,80,80,.32);color:#ff6b6b;text-shadow:0 0 7px #ff6b6b;background:rgba(255,80,80,.06)}
-    .btn-g.m:hover{background:rgba(255,80,80,.13);box-shadow:0 0 12px rgba(255,80,80,.32)}
-    .btn-g.m:active{transform:scale(.92);box-shadow:0 0 22px rgba(255,80,80,.6)}
-
+    /* ── VS Center block ── */
     .vs-col{display:flex;align-items:center;justify-content:center}
-    .vs-txt{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:var(--gold);text-shadow:0 0 10px var(--gold),0 0 28px rgba(255,224,51,.45)}
+    .vs-center-block{
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+    }
+    .vs-txt{
+      font-family:'Orbitron',monospace;font-size:17px;font-weight:900;
+      color:var(--gold);
+      text-shadow:0 0 10px var(--gold),0 0 28px rgba(255,224,51,.45),0 0 50px rgba(255,224,51,.2);
+      letter-spacing:2px;
+    }
+
+    /* USDT badge in VS center */
+    .vs-usdt-badge{
+      display:flex;flex-direction:column;align-items:center;gap:3px;
+    }
+    .vs-usdt-img{
+      width:28px;height:28px;border-radius:50%;
+      object-fit:cover;
+      border:1.5px solid rgba(38,161,123,0.45);
+      box-shadow:
+        0 0 0 3px rgba(38,161,123,0.10),
+        0 0 14px rgba(38,161,123,0.35),
+        0 0 28px rgba(38,161,123,0.15);
+      animation:usdt-glow 2.8s ease-in-out infinite;
+    }
+    @keyframes usdt-glow{
+      0%,100%{box-shadow:0 0 0 3px rgba(38,161,123,0.10),0 0 14px rgba(38,161,123,0.30),0 0 28px rgba(38,161,123,0.12)}
+      50%{box-shadow:0 0 0 4px rgba(38,161,123,0.20),0 0 22px rgba(38,161,123,0.55),0 0 40px rgba(38,161,123,0.25)}
+    }
+    .vs-usdt-label{
+      font-family:'Orbitron',monospace;font-size:7px;font-weight:700;
+      letter-spacing:2px;color:rgba(38,161,123,0.75);
+      text-shadow:0 0 6px rgba(38,161,123,0.4);
+    }
+
+    .score-col{display:flex;flex-direction:column;align-items:center;gap:5px}
+    .score-num{
+      font-family:'Orbitron',monospace;font-size:28px;font-weight:900;
+      min-width:36px;text-align:center;
+      text-shadow:0 0 14px rgba(255,255,255,0.15);
+      line-height:1;
+    }
+    .btn-g{
+      width:26px;height:26px;border-radius:50%;
+      border:1.5px solid rgba(0,255,136,0.30);
+      background:rgba(0,255,136,0.05);
+      color:var(--green);font-size:14px;font-weight:700;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      transition:all .14s;text-shadow:0 0 6px var(--green);
+      line-height:1;
+    }
+    .btn-g:hover{background:rgba(0,255,136,.13);box-shadow:0 0 10px rgba(0,255,136,.35)}
+    .btn-g:active{transform:scale(.90);box-shadow:0 0 18px rgba(0,255,136,.60)}
+    .btn-g.m{border-color:rgba(255,80,80,.30);color:#ff6b6b;text-shadow:0 0 6px #ff6b6b;background:rgba(255,80,80,.05)}
+    .btn-g.m:hover{background:rgba(255,80,80,.12);box-shadow:0 0 10px rgba(255,80,80,.30)}
+    .btn-g.m:active{transform:scale(.90);box-shadow:0 0 18px rgba(255,80,80,.55)}
 
     /* ── Info strip ─────────────────────────────────── */
     .info-strip{padding:11px 16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -364,7 +413,6 @@
       ⚽ PRONÓSTICOS EN VIVO
     </div>
     <div class="hdr-title-row">
-      <img src="/mnt/user-data/uploads/images.png" alt="USDT" class="hdr-usdt"/>
       <div class="hdr-title">PREDICE Y GANA</div>
     </div>
     <div class="hdr-sub" id="hdr-sub">
@@ -419,9 +467,14 @@
   <!-- ═══ MATCH CARD ═══ -->
   <div class="card match-card">
     <div class="teams">
+
+      <!-- Home Team -->
       <div class="team">
-        <div class="logo-ring" id="home-logo-wrap">
-          <span class="emoji" id="home-emoji">⚽</span>
+        <div class="logo-halo">
+          <div class="logo-ring" id="home-logo-wrap">
+            <div class="logo-shimmer"></div>
+            <span class="emoji" id="home-emoji">⚽</span>
+          </div>
         </div>
         <div class="tname" id="home-name">Cargando…</div>
         <div class="score-col">
@@ -430,10 +483,26 @@
           <button class="btn-g m" onclick="changeScore('home',-1)">−</button>
         </div>
       </div>
-      <div class="vs-col"><span class="vs-txt">VS</span></div>
+
+      <!-- VS Center -->
+      <div class="vs-col">
+        <div class="vs-center-block">
+          <span class="vs-txt">VS</span>
+          <!-- USDT prize badge -->
+          <div class="vs-usdt-badge">
+            <img src="/mnt/user-data/uploads/images.png" alt="USDT" class="vs-usdt-img"/>
+            <span class="vs-usdt-label">USDT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Away Team -->
       <div class="team">
-        <div class="logo-ring" id="away-logo-wrap">
-          <span class="emoji" id="away-emoji">🏆</span>
+        <div class="logo-halo logo-halo--away">
+          <div class="logo-ring" id="away-logo-wrap">
+            <div class="logo-shimmer"></div>
+            <span class="emoji" id="away-emoji">🏆</span>
+          </div>
         </div>
         <div class="tname" id="away-name">Cargando…</div>
         <div class="score-col">
@@ -442,6 +511,7 @@
           <button class="btn-g m" onclick="changeScore('away',-1)">−</button>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -523,11 +593,269 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   CONFIG — replace with your real Supabase credentials
-   (public anon key only — read access, no secrets here)
+   SUPABASE CONFIG
 ═══════════════════════════════════════════════════════════════ */
-var SUPABASE_URL = "https://lmcnhnykecereeoctewb.supabase.co";
+var SUPABASE_URL      = "https://lmcnhnykecereeoctewb.supabase.co";
 var SUPABASE_ANON_KEY = "sb_publishable_zuUdgIwhxmVXssULXB6BsQ_m0xgYMD9";
+
+/* ═══════════════════════════════════════════════════════════════
+   TEAM EMOJI MAP
+═══════════════════════════════════════════════════════════════ */
+var TEAM_EMOJI = {
+  "argentina":"🇦🇷","brasil":"🇧🇷","brazil":"🇧🇷","colombia":"🇨🇴",
+  "españa":"🇪🇸","spain":"🇪🇸","france":"🇫🇷","francia":"🇫🇷",
+  "germany":"🇩🇪","alemania":"🇩🇪","portugal":"🇵🇹","england":"󠁧󠁢󠁥󠁮󠁧🏴",
+  "mexico":"🇲🇽","uruguay":"🇺🇾","chile":"🇨🇱","ecuador":"🇪🇨",
+  "real madrid":"⚪","barcelona":"🔵","manchester city":"🔵",
+  "arsenal":"🔴","liverpool":"🔴","chelsea":"🔵","atletico":"🔴",
+  "ac milan":"⚫","inter":"🟦","juventus":"⚫","napoli":"🩵",
+  "bayern":"🔴","dortmund":"🟡","psg":"🔵","marseille":"⚪",
+  "flamengo":"🔴","boca juniors":"🟡","river plate":"⚪",
+  "palmeiras":"🟢","fluminense":"🔴","atletico mineiro":"⚫",
+};
+function teamEmoji(name){
+  if(!name) return "⚽";
+  var k = name.toLowerCase();
+  for(var t in TEAM_EMOJI){ if(k.includes(t)) return TEAM_EMOJI[t]; }
+  return "⚽";
+}
+
+/* ── State ── */
+var scores = {home:0, away:0};
+var timerID = null, isLive = false, activeKO = null;
+
+/* ═══════════════════════════════════════════════════════════════
+   LOADING STATE — shown while fetching
+═══════════════════════════════════════════════════════════════ */
+function showLoading(){
+  setText("hdr-tournament", "CARGANDO…");
+  setText("hdr-stadium",    "—");
+  setText("hdr-time",       "--:--");
+  setText("home-name",      "—");
+  setText("away-name",      "—");
+  setText("home-emoji",     "⏳");
+  setText("away-emoji",     "⏳");
+  setText("i-stad","—"); setText("i-time","—");
+  setText("i-badge","—"); setText("i-tier","—");
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FETCH FROM SUPABASE — with retry
+═══════════════════════════════════════════════════════════════ */
+async function loadMatch(attempt){
+  attempt = attempt || 1;
+  showLoading();
+
+  try{
+    var res = await fetch(
+      SUPABASE_URL + "/rest/v1/featured_match?id=eq.1&select=*&limit=1",
+      { headers:{
+          "apikey":        SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type":  "application/json",
+          "Accept":        "application/json"
+      }}
+    );
+
+    if(!res.ok){
+      var err = await res.text();
+      console.error("Supabase " + res.status + ":", err);
+      throw new Error("HTTP " + res.status);
+    }
+
+    var rows = await res.json();
+    console.log("Supabase response:", rows);
+
+    /* ── Table empty or no row yet ── */
+    if(!rows || rows.length === 0){
+      showNoMatch("La base de datos está vacía. Ejecuta el GitHub Action para cargar el primer partido.");
+      return;
+    }
+
+    var m = rows[0];
+
+    /* ── GitHub Action ran but found no match today ── */
+    if(m.status === "waiting" || !m.kickoff_utc){
+      setWaiting();
+      return;
+    }
+
+    /* ── We have a real match ── */
+    renderMatch(m);
+
+  } catch(e){
+    console.error("loadMatch error (attempt " + attempt + "):", e.message);
+
+    /* retry once after 3s */
+    if(attempt < 2){
+      setTimeout(function(){ loadMatch(2); }, 3000);
+    } else {
+      showNoMatch("No se pudo conectar a la base de datos. Verifica tu conexión e intenta de nuevo.");
+    }
+  }
+}
+
+/* ── Show connection/empty error gracefully ── */
+function showNoMatch(msg){
+  var dg = document.getElementById("timer-digits");
+  if(dg) dg.innerHTML =
+    '<span style="font-family:Inter,sans-serif;font-size:clamp(10px,3vw,13px);'+
+    'color:rgba(255,202,40,0.8);letter-spacing:1px;text-align:center;line-height:1.5;'+
+    'padding:0 8px;display:block">' + msg + '</span>';
+  setText("timer-lbl", "SIN PARTIDO ACTIVO");
+  var fc = document.getElementById("forecast"); if(fc) fc.style.display = "none";
+  setText("hdr-tournament", "SIN DATOS");
+  setText("hdr-stadium",    "—");
+  setText("hdr-time",       "--:--");
+  setText("home-name", "—"); setText("away-name", "—");
+  setText("home-emoji","❓"); setText("away-emoji","❓");
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER MATCH FROM SUPABASE ROW
+═══════════════════════════════════════════════════════════════ */
+function renderMatch(m){
+  var koDate   = new Date(m.kickoff_utc);
+  var timeStr  = koDate.getHours().toString().padStart(2,"0") + ":" +
+                 koDate.getMinutes().toString().padStart(2,"0");
+  var tournament = (m.badge || m.tournament || "")
+                    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]+\s*/gu,"")
+                    .trim() || (m.tournament || "PARTIDO");
+
+  /* Header pill */
+  setText("hdr-tournament", tournament.toUpperCase());
+  setText("hdr-stadium",    m.stadium || "—");
+  setText("hdr-time",       timeStr);
+
+  /* Teams */
+  setText("home-name", m.home_team || "Local");
+  setText("away-name",  m.away_team  || "Visitante");
+
+  if(m.home_logo) setTeamLogo("home-logo-wrap","home-emoji", m.home_logo, m.home_team);
+  else setText("home-emoji", teamEmoji(m.home_team));
+
+  if(m.away_logo) setTeamLogo("away-logo-wrap","away-emoji", m.away_logo, m.away_team);
+  else setText("away-emoji", teamEmoji(m.away_team));
+
+  /* Info strip */
+  setText("i-stad",  m.stadium  || "—");
+  setText("i-time",  timeStr);
+  setText("i-badge", m.badge    || m.tournament || "—");
+  setText("i-tier",  m.tier ? "Tier " + m.tier + " Élite" : "—");
+
+  /* Countdown */
+  activeKO = koDate;
+  var diff = koDate - Date.now();
+  if(diff <= 0)               goLive();
+  else if(diff > 24*3600*1000) setWaiting();
+  else { tick(); timerID = setInterval(tick, 1000); }
+}
+
+/* Load team logo image dynamically */
+function setTeamLogo(wrapId, emojiId, logoUrl, teamName){
+  var wrap = document.getElementById(wrapId);
+  if(!wrap) return;
+  /* remove old img if exists */
+  var old = wrap.querySelector("img.dyn-logo");
+  if(old) old.remove();
+  var img = document.createElement("img");
+  img.className = "dyn-logo";
+  img.src = logoUrl;
+  img.alt = teamName || "";
+  img.style.cssText = "position:relative;z-index:2;width:100%;height:100%;object-fit:contain;padding:9px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5)) brightness(1.05) saturate(1.1)";
+  img.onerror = function(){
+    this.remove();
+    var em = document.getElementById(emojiId);
+    if(em){ em.style.display = ""; em.textContent = teamEmoji(teamName); }
+  };
+  var em = document.getElementById(emojiId);
+  if(em) em.style.display = "none";
+  wrap.appendChild(img);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COUNTDOWN ENGINE
+═══════════════════════════════════════════════════════════════ */
+function pad(n){ return String(Math.floor(n)).padStart(2,"0"); }
+
+function tick(){
+  if(!activeKO || isLive) return;
+  var diff = activeKO - Date.now();
+  if(diff <= 0){ goLive(); return; }
+  if(diff > 24*3600*1000){ setWaiting(); clearInterval(timerID); return; }
+  var tot = Math.floor(diff/1000);
+  se("cd-d", pad(Math.floor(tot/86400)));
+  se("cd-h", pad(Math.floor((tot%86400)/3600)));
+  se("cd-m", pad(Math.floor((tot%3600)/60)));
+  se("cd-s", pad(tot%60));
+}
+
+function setWaiting(){
+  clearInterval(timerID);
+  var dg = document.getElementById("timer-digits");
+  if(dg) dg.innerHTML =
+    '<span style="font-family:Orbitron,monospace;font-size:clamp(11px,3.4vw,17px);'+
+    'letter-spacing:2px;color:#ffe033;text-shadow:0 0 10px rgba(255,224,51,.7),'+
+    '0 0 24px rgba(255,224,51,.3);font-weight:700;text-align:center;display:block">'+
+    'ESPERA EL PRÓXIMO PARTIDO</span>';
+  setText("timer-lbl","PRÓXIMO ENCUENTRO");
+  var fc = document.getElementById("forecast"); if(fc) fc.style.display = "none";
+}
+
+function goLive(){
+  isLive = true; clearInterval(timerID);
+  var dg = document.getElementById("timer-digits");
+  if(dg) dg.innerHTML =
+    '<span style="font-family:Orbitron,monospace;font-size:clamp(15px,5vw,26px);'+
+    'letter-spacing:3px;color:#00ffb8;text-shadow:0 0 12px #00ffb8,'+
+    '0 0 30px rgba(0,255,184,.5);font-weight:900;text-align:center;display:block">'+
+    '¡PARTIDO EN CURSO!</span>';
+  setText("timer-lbl","EN VIVO AHORA");
+  var fc = document.getElementById("forecast"); if(fc) fc.style.display = "none";
+  setText("live-sub","EN VIVO · ACCIÓN EN TIEMPO REAL");
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORM & ACTIONS
+═══════════════════════════════════════════════════════════════ */
+function valUser(){
+  var i = document.getElementById("username"); if(!i) return false;
+  var ok = i.value.trim().length >= 2;
+  i.classList.toggle("valid", ok); return ok;
+}
+function valWallet(){
+  var i = document.getElementById("wallet"); if(!i) return false;
+  var ok = /^(EQ|UQ)[A-Za-z0-9_-]{46}$/.test(i.value.trim());
+  i.classList.toggle("valid", ok); return ok;
+}
+function submit(){
+  var ni = document.getElementById("username");
+  var wi = document.getElementById("wallet");
+  if(!ni.value.trim()){ toast("Por favor ingresa tu nombre de usuario"); ni.focus(); return; }
+  if(!valUser()){        toast("El nombre debe tener al menos 2 caracteres"); ni.focus(); return; }
+  if(!wi.value.trim()){ toast("Por favor ingresa tu dirección de billetera"); wi.focus(); return; }
+  if(!valWallet()){      toast("Verifica el formato de tu dirección TON"); wi.focus(); return; }
+  document.getElementById("modal").classList.add("show");
+}
+function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+function changeScore(t,d){
+  scores[t] = Math.max(0, scores[t]+d);
+  se(t+"-score", scores[t]);
+}
+
+/* ── Utils ── */
+function se(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+function setText(id,v){ se(id,v); }
+var _tid;
+function toast(msg){
+  var t = document.getElementById("toast"); if(!t) return;
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(_tid); _tid = setTimeout(function(){ t.classList.remove("show"); }, 2800);
+}
+
+/* ── Boot ── */
+document.addEventListener("DOMContentLoaded", function(){ loadMatch(1); });
+</script>
 
 /* ── Emoji fallbacks per tier ────────────────────────────────── */
 var TIER_EMOJI = { 1:"🌎", 2:"⚽", 3:"🏆" };
